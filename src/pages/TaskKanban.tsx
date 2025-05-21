@@ -8,6 +8,7 @@ import ProjectSetting from "../components/ProjectSetting";
 import TaskAdd from "../components/TaskAdd";
 import { useTask } from "../hooks/useTask";
 import axiosInstance from "../api/lib/axios";
+import { useParams } from "react-router-dom";
 
 interface TaskKanbanProps {
   activeTab: string;
@@ -15,6 +16,7 @@ interface TaskKanbanProps {
 }
 
 const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
+  // const { projectId } = useParams<{ projectId: string }>();
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
   const [isTaskAddOpen, setIsTaskAddOpen] = useState(false);
