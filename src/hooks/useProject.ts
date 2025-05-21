@@ -2,11 +2,11 @@ import { useEffect, useState} from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import { fetchProjectList } from "../api/projectApi";
+import { useQuery,useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProject, fetchProjectList } from "../api/projectApi";
 
 const projectSchema = z.object({
-   _id: z.string(),
+   _id: z.string().optional(),
    status: z.string(),
    name: z.string().min(1, ""),
    description: z.string().min(1, "").optional(),
@@ -14,11 +14,13 @@ const projectSchema = z.object({
    priority: z.number(),
    startDate: z.preprocess((val) => (val === "" ? undefined : val), z.string().optional()),
    dueDate: z.preprocess((val) => (val === "" ? undefined : val), z.string().optional()),
+   members: z.array(z.string()).optional().default([]),
 });
 
 export interface ProjectIinfoValues extends z.infer<typeof projectSchema> {}
 
 const useProject = (teamId: string | null, isCreate: boolean) => {
+    const queryClient = useQueryClient();
     const [projects, setProjects] = useState<ProjectIinfoValues[]>([]);
 
     const methods = useForm<ProjectIinfoValues>({
@@ -30,10 +32,33 @@ const useProject = (teamId: string | null, isCreate: boolean) => {
             priority: 0,
             startDate: "",
             dueDate: "",
+            members: [],
         },
         resolver: zodResolver(projectSchema),
       });
 
+    // 프로젝트 생성 mutation
+    const createProjectMutation = useMutation(
+      (newProject: ProjectIinfoValues) => createProject(newProject),
+      {
+          onSuccess: (data) => {
+              console.log("프로젝트 생성:", data);
+              queryClient.invalidateQueries(["projectInfo", teamId]);
+          },
+          onError: (error) => {
+              console.error("프로젝트 생성 에러:", error);
+          },
+      }
+    );
+
+    // 프로젝트 생성
+    const handleCreateProject = methods.handleSubmit(async (formData) => {
+        try {
+          await createProjectMutation.mutateAsync(formData);
+        } catch (error) {
+          console.log(error);
+        }
+    });
 
     // 프로젝트 전체 리스트 조회
     const { data: projectData, isLoading } = useQuery(
@@ -52,7 +77,7 @@ const useProject = (teamId: string | null, isCreate: boolean) => {
         }
     }, [projectData]);
 
-    return { ...methods, projects, isLoading };
+    return { ...methods, projects, isLoading, handleCreateProject };
 }
 
 export default useProject;
