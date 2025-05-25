@@ -85,7 +85,7 @@ const TeamSpace: React.FC = () => {
             <div className="flex flex-col w-full px-10 py-8">
                 {/* ✅ 프로젝트 생성 버튼 눌렀을 때 화면 전환 */}
                 {isProjectAddOpen ? (
-                <ProjectAdd />
+                <ProjectAdd onSuccess={() => setIsProjectAddOpen(false)}/>
                 ) : (
                 <div className="flex gap-4 overflow-x-auto whitespace-nowrap">
                     {Object.entries(projectState).map(([status, projectList]) => (

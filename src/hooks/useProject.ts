@@ -19,7 +19,7 @@ const projectSchema = z.object({
 
 export interface ProjectIinfoValues extends z.infer<typeof projectSchema> {}
 
-const useProject = (teamId: string | null, isCreate: boolean) => {
+function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: () => void }) {
     const queryClient = useQueryClient();
     const [projects, setProjects] = useState<ProjectIinfoValues[]>([]);
 
@@ -44,6 +44,7 @@ const useProject = (teamId: string | null, isCreate: boolean) => {
           onSuccess: (data) => {
               console.log("프로젝트 생성:", data);
               queryClient.invalidateQueries(["projectInfo", teamId]);
+              options?.onSuccess?.();
           },
           onError: (error) => {
               console.error("프로젝트 생성 에러:", error);

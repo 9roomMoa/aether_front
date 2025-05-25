@@ -6,8 +6,6 @@ import { fetchUserInfo } from "../api/userApi";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const projectId = "679aedec4f051a6eaac0204c"; // 현재 프로젝트 ID (하드코딩)
-
 const taskSchema = z.object({
   title: z.string().min(1, ""),
   description: z.string().min(1, ""),
@@ -25,7 +23,7 @@ const taskSchema = z.object({
 
 export interface TaskInfoValues extends z.infer<typeof taskSchema> {}
 
-export const useTask = (tid: string | null, isCreate: boolean, fetchTasks: () => void, closeTab: () => void) => {
+export const useTask = (projectId: string, tid: string | null, isCreate: boolean, fetchTasks: () => void, closeTab: () => void) => {
   const queryClient = useQueryClient();
   const { data: userInfo } = useQuery(["userInfo"], () => fetchUserInfo());
   const { data: taskData } = useQuery(["taskInfo", tid], () => fetchTaskInfo(tid as string), {
@@ -83,6 +81,7 @@ export const useTask = (tid: string | null, isCreate: boolean, fetchTasks: () =>
       onSuccess: (data) => {
         console.log("업무 생성:", data);
         queryClient.invalidateQueries(["tasks"]);
+        if (closeTab) closeTab();
       },
       onError: (error) => {
         console.error("업무 생성 에러:", error);

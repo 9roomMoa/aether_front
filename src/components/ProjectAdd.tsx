@@ -9,9 +9,15 @@ import ProjectScope from "./Project/ProjectScope";
 import TaskDate from "./TaskInfo/TaskDate";
 import TaskPriority from "./TaskInfo/TaskPriority";
 
-const ProjectAdd: React.FC = () => {
+interface ProjectAddProps {
+  onSuccess: () => void;
+}
+
+const ProjectAdd: React.FC<ProjectAddProps> = ({onSuccess}) => {
   const teamId = "67fce39dddf4eb5d55ecb3d0";
-  const methods = useProject(teamId, true);
+  const methods = useProject(teamId, true, {
+    onSuccess,
+  });
   const { handleCreateProject } = methods;
 
   return (

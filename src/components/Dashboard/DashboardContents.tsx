@@ -111,7 +111,7 @@ const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
               <div
                 key={project._id}
                 className="bg-[#F5F7FA] hover:bg-gray-100 rounded-lg px-6 py-4 mb-4 cursor-pointer"
-                onClick={() => navigate(`/tasks`)}
+                onClick={() => navigate(`/tasks/${project._id}`)}
               >
                 <div className="flex items-center gap-2 mb-1">
                   {getStatusBadge(project.status)}
