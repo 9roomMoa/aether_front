@@ -7,11 +7,11 @@ import TaskDivider from './TaskDivider';
 import TaskManager from './TaskManager/TaskManager';
 import { FormProvider } from "react-hook-form";
 import useTask from "../hooks/useTask";
-import axiosInstance from "../api/lib/axios";
 
-const TaskAdd: React.FC<{ closeTab: () => void; fetchTasks: () => void }> = ({ fetchTasks, closeTab }) => {
-  const methods = useTask(null, true, fetchTasks, closeTab);
-  const { userInfo, handleSubmit, watch, setValue, handleCreateTask } = methods;
+const TaskAdd: React.FC<{ fetchTasks: () => void }> = ({ fetchTasks }) => {
+  // useTask 인수 개수 안맞음
+  const methods = useTask(null, true, fetchTasks);
+  const { userInfo, handleCreateTask } = methods;
   
   const [activeTab, setActiveTab] = useState('info');
   const [title, setTitle] = useState("");

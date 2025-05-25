@@ -6,7 +6,7 @@ import TaskMenu from "../components/KanbanBoard/TaskMenu";
 import TaskSetting from "../components/TaskSetting";
 import ProjectSetting from "../components/ProjectSetting";
 import TaskAdd from "../components/TaskAdd";
-import { useTask } from "../hooks/useTask";
+// import { useTask } from "../hooks/useTask";
 import axiosInstance from "../api/lib/axios";
 import { useParams } from "react-router-dom";
 
@@ -59,6 +59,8 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
   
   const projectId = "679aedec4f051a6eaac0204c"; // 현재 프로젝트 ID (하드코딩)
 
+  // const methods = useTask(null, true);
+
   // 업무 데이터 가져오기
   const fetchTasks = async () => {
     try {
@@ -103,13 +105,13 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div>
-      <Breadcrumb
-        paths={[
-          { label: "ABC 회사" },
-          { label: "ABCD 팀", path: "/teamspace" }, // 여기에만 navigate 기능 추가
-          { label: "ABCDE 프로젝트" },
-        ]}
-      />
+        <Breadcrumb
+          paths={[
+            { label: "ABC 회사" },
+            { label: "ABCD 팀", path: "/teamspace" }, // 여기에만 navigate 기능 추가
+            { label: "ABCDE 프로젝트" },
+          ]}
+        />
       </div>
 
       <div
@@ -204,6 +206,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
               zIndex: 10,
             }}
           >
+            {/* closeTab 속성 없음 문제 */}
             {isTaskSettingOpen ? 
             <TaskSetting selectedTaskId={selectedTask} fetchTasks={fetchTasks} closeTab={() => setIsTaskSettingOpen(false)}/> : <TaskAdd fetchTasks={fetchTasks} closeTab={() => setIsTaskSettingOpen(false)}/>}
           </div>
