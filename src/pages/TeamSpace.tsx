@@ -4,14 +4,15 @@ import Breadcrumb from "../components/BreadCrumb";
 import TaskMenu from "../components/KanbanBoard/TaskMenu";
 import TaskCard from "../components/KanbanBoard/TaskCard";
 import ProjectAdd from "../components/ProjectAdd";
-// import { useTask } from "../hooks/useTask";
 import useProject from "../hooks/useProject";
+import { useNavigate } from "react-router-dom";
 
 const TeamSpace: React.FC = () => {
   // const [activeTab, setActiveTab] = useState("프로젝트");
   const [isProjectAddOpen, setIsProjectAddOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [_isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
+  const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<{ [key: string]: any[] }>({
     "To Do": [],
@@ -32,14 +33,10 @@ const TeamSpace: React.FC = () => {
   };
 
   const handleProjectClick = (projectId: string) => {
-    if (selectedProject === projectId) {
-      setSelectedProject(null);
-      setIsTaskSettingOpen(false);
-    } else {
-      setSelectedProject(projectId);
-      setIsTaskSettingOpen(true);
-      setIsProjectAddOpen(false);
-    }
+    setSelectedProject(projectId);
+    setIsTaskSettingOpen(true);
+    setIsProjectAddOpen(false);
+    navigate(`/tasks/${projectId}`);
   };
 
   const handleProjectAddClick = () => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ProejectTitle from "./Project/ProjectTitle";
+import ProjectTitle from "./Project/ProjectTitle";
 import ProjectDescription from "./Project/ProjectDescription";
 import TaskStatus from "./TaskInfo/TaskStatus";
 import useProject from "../hooks/useProject";
@@ -20,7 +20,7 @@ const ProjectSetting: React.FC = () => {
           {/* 프로젝트 제목 */}
           <div>
             <label className="w-block mb-2 text-sm font-medium text-[#4F5462]">프로젝트 제목</label>
-            <ProejectTitle/>
+            <ProjectTitle/>
           </div>
 
           {/* 프로젝트 설명 */}
