@@ -16,7 +16,7 @@ interface TaskKanbanProps {
 }
 
 const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
-  // const { projectId } = useParams<{ projectId: string }>();
+  const { projectId } = useParams<{ projectId: string }>();
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
   const [isTaskAddOpen, setIsTaskAddOpen] = useState(false);
@@ -56,8 +56,6 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
         return "#D3D3D3";
     }
   };
-  
-  const projectId = "679aedec4f051a6eaac0204c"; // 현재 프로젝트 ID (하드코딩)
 
   // const methods = useTask(null, true);
 

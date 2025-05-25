@@ -13,7 +13,13 @@ const SignUp = () => {
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "";
-    setForm((prevForm) => ({ ...prevForm, name: storedUsername }));
+    const storedRank = localStorage.getItem("rank") || "";
+
+    setForm((prevForm) => ({ 
+      ...prevForm, 
+      name: storedUsername,
+      position: storedRank,
+    }));
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

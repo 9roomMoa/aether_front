@@ -15,7 +15,7 @@ export const fetchUserInfo = async (): Promise<User> => {
   const email = localStorage.getItem("email") || "";
   const name = localStorage.getItem("username") || "";
   const role = "Member"; // 기본값 또는 백엔드에서 받아올 수 있으면 교체
-  const rank = "Intern"; // 기본값 또는 백엔드에서 받아올 수 있으면 교체
+  const rank = localStorage.getItem("rank") || "";
 
   return { _id, email, name, role, rank };
 };
