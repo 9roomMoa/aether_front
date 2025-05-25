@@ -9,6 +9,7 @@ interface Task {
   title: string;
   description: string;
   status: string;
+  project: string;
 }
 
 interface Project {
@@ -34,28 +35,27 @@ interface DashboardContentsProps {
 const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
   const navigate = useNavigate();
   const [myTasks, setMyTasks] = useState<Task[]>([]);
+  const [sortType, setSortType] = useState<"dueDate" | "priority">("dueDate");
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
     const fetchMyTasks = async () => {
       try {
-        const response = await axiosInstance.get("/api/tasks/679aedec4f051a6eaac0204c");
+        const response = await axiosInstance.get(`/api/tasks?type=${sortType}`);
 
         const data = response.data?.data;
-        const allTasks = [
-          ...(data["To Do"] || []),
-          ...(data["In Progress"] || []),
-          ...(data["Done"] || []),
-          ...(data["Issue"] || []),
-          ...(data["Hold"] || []),
-        ];
+        console.log("받은 업무 데이터:", data);
 
-        setMyTasks(allTasks);
+        setMyTasks(data || []);
       } catch (error) {
         console.error("나의 업무 가져오기 실패", error);
       }
     };
 
+    fetchMyTasks();
+  }, [sortType]);
+
+  useEffect(() => {
     const fetchProjects = async () => {
       try {
         const response = await axiosInstance.get("/api/projects/67fce39dddf4eb5d55ecb3d0");
@@ -65,7 +65,6 @@ const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
       }
     };
 
-    fetchMyTasks();
     fetchProjects();
   }, []);
 
@@ -112,7 +111,7 @@ const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
               <div
                 key={project._id}
                 className="bg-[#F5F7FA] hover:bg-gray-100 rounded-lg px-6 py-4 mb-4 cursor-pointer"
-                onClick={() => navigate(`/tasks`)}
+                onClick={() => navigate(`/tasks/${project._id}`)}
               >
                 <div className="flex items-center gap-2 mb-1">
                   {getStatusBadge(project.status)}
@@ -129,7 +128,12 @@ const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
       <div className="h-[722px] min-w-[394px] max-w-[402px] bg-white rounded-xl shadow-md p-4 overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">나의 업무</h2>
-          <span className="text-sm text-gray-400">마감일 순 ▾</span>
+          <span
+            className="text-sm text-gray-400 cursor-pointer"
+            onClick={() => setSortType((prev) => (prev === "dueDate" ? "priority" : "dueDate"))}
+          >
+            {sortType === "dueDate" ? "마감일 순 ▾" : "우선순위 순 ▾"}
+          </span>
         </div>
         {myTasks.length === 0 ? (
           <p className="text-sm text-gray-400">담당한 업무가 없습니다.</p>
@@ -140,7 +144,7 @@ const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
               <div
                 key={task._id}
                 className="bg-[#F5F7FA] hover:bg-gray-100 rounded-lg px-6 py-4 mb-4 cursor-pointer"
-                onClick={() => navigate(`/tasks`)}
+                onClick={() => navigate(`/tasks/${task.project}`)}
               >
                 <div className="flex items-center gap-2 mb-1">
                   {getStatusBadge(task.status)}

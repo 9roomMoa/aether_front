@@ -8,8 +8,8 @@ import TaskManager from './TaskManager/TaskManager';
 import { FormProvider } from "react-hook-form";
 import useTask from "../hooks/useTask";
 
-const TaskAdd: React.FC<{ fetchTasks: () => void }> = ({ fetchTasks }) => {
-  const methods = useTask(null, true, fetchTasks);
+const TaskAdd: React.FC<{ projectId:string, closeTab: () => void; fetchTasks: () => void }> = ({ projectId, fetchTasks, closeTab }) => {
+  const methods = useTask(projectId, null, true, fetchTasks, closeTab);
   const { userInfo, handleCreateTask } = methods;
   
   const [activeTab, setActiveTab] = useState('info');

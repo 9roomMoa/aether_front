@@ -34,8 +34,11 @@ export const documentApi = {
     formData.append("files", files); 
 
     try{
-      const response = await axiosInstance.post(`/api/tasks/${tid}/docs`, formData);
-    
+      const response = await axiosInstance.post(`/api/tasks/${tid}/docs`, formData, {
+        headers: {
+          'Content-Type': undefined,
+        },
+      });
       return response.data;
     } catch (error) {
       console.log(error);

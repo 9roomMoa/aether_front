@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BackgroundImage from "../assets/Login-Logo.svg";
+import { getRankKorean } from "../utils/rank";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -13,7 +14,13 @@ const SignUp = () => {
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "";
-    setForm((prevForm) => ({ ...prevForm, name: storedUsername }));
+    const storedRank = localStorage.getItem("rank") || "";
+
+    setForm((prevForm) => ({ 
+      ...prevForm, 
+      name: storedUsername,
+      position: storedRank,
+    }));
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,8 +95,8 @@ const SignUp = () => {
               id="position"
               name="position"
               placeholder="직급을 입력해 주세요."
-              value={form.position}
-              onChange={handleChange}
+              value={getRankKorean(form.position)}
+              readOnly
               style={{
                 boxShadow: "0px 0px 8px 0px #1A1A231F inset",
               }}

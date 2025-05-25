@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ProejectTitle from "./Project/ProjectTitle";
+import ProjectTitle from "./Project/ProjectTitle";
 import ProjectDescription from "./Project/ProjectDescription";
 import TaskStatus from "./TaskInfo/TaskStatus";
 import useProject from "../hooks/useProject";
@@ -9,18 +9,25 @@ import ProjectScope from "./Project/ProjectScope";
 import TaskDate from "./TaskInfo/TaskDate";
 import TaskPriority from "./TaskInfo/TaskPriority";
 
-const ProjectAdd: React.FC = () => {
-  const methods = useProject();
-  const [title, setTitle] = useState("");
+interface ProjectAddProps {
+  onSuccess: () => void;
+}
+
+const ProjectAdd: React.FC<ProjectAddProps> = ({onSuccess}) => {
+  const teamId = "67fce39dddf4eb5d55ecb3d0";
+  const methods = useProject(teamId, true, {
+    onSuccess,
+  });
+  const { handleCreateProject } = methods;
 
   return (
     <div>
       <FormProvider {...methods}>
-        <form>
+        <form onSubmit={handleCreateProject}>
           {/* 프로젝트 제목 */}
           <div className="mb-6">
             <label className="w-block mb-2 text-sm font-medium text-[#4F5462]">프로젝트 제목</label>
-            <ProejectTitle title={title} setTitle={setTitle}/>
+            <ProjectTitle />
           </div>
 
           {/* 프로젝트 설명 */}
@@ -66,7 +73,10 @@ const ProjectAdd: React.FC = () => {
 
           {/* 생성 버튼 */}
           <div className="mt-10 text-right">
-            <button className="bg-[#FF432B] text-white font-semibold px-5 py-2 rounded">
+            <button
+              type="submit" 
+              className="bg-[#FF432B] text-white font-semibold px-5 py-2 rounded"
+            >
               생성하기
             </button>
           </div>

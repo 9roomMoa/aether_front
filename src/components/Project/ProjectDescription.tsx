@@ -1,13 +1,20 @@
 import React, { useState, ChangeEvent } from "react";
+import { useFormContext } from "react-hook-form";
+
+interface ProjectDescriptionProps {
+  description: string;
+  setDescription?: (newTitle: string) => void;
+}
 
 const ProjectDescription: React.FC = () => {
   const maxLength = 364;
-  const [description, setDescription] = useState("");
+  const { register, setValue, watch } = useFormContext();
+  const description = watch("description") || "";
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     if (value.length <= maxLength) {
-      setDescription(value);
+      setValue("description", value);
     }
   };
 

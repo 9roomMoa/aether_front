@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ProejectTitle from "./Project/ProjectTitle";
+import ProjectTitle from "./Project/ProjectTitle";
 import ProjectDescription from "./Project/ProjectDescription";
 import TaskStatus from "./TaskInfo/TaskStatus";
 import useProject from "../hooks/useProject";
@@ -12,7 +12,6 @@ import TaskPriority from "./TaskInfo/TaskPriority";
 const ProjectSetting: React.FC = () => {
   const teamId = "67fce39dddf4eb5d55ecb3d0";
   const methods = useProject(teamId, false);
-  const [title, setTitle] = useState("");
 
   return (
     <div className="w-full px-10 py-8">
@@ -21,7 +20,7 @@ const ProjectSetting: React.FC = () => {
           {/* 프로젝트 제목 */}
           <div>
             <label className="w-block mb-2 text-sm font-medium text-[#4F5462]">프로젝트 제목</label>
-            <ProejectTitle title={title} setTitle={setTitle}/>
+            <ProjectTitle/>
           </div>
 
           {/* 프로젝트 설명 */}
