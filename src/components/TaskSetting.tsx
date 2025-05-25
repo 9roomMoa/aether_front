@@ -54,6 +54,11 @@ const TaskSetting: React.FC<{ projectId:string, selectedTaskId: string | null; c
     setActiveTab('info');
   }, [selectedTaskId]);
 
+  // 탭이 변경될 때마다 초기화
+  useEffect(() => {
+    setIsAddingManager(false); 
+  }, [activeTab]);
+  
   return (
     <FormProvider {...methods}>  
       <div className="flex items-stretch h-full bg-white pl-2">
