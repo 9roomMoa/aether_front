@@ -140,7 +140,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
           {/* "프로젝트 설정" 탭이 활성화되면 TaskInfo 렌더링 */}
           {activeTab === "프로젝트 설정" ? (
             <div className="relative w-full min-h-screen overflow-x-auto">
-              <ProjectSetting />
+              <ProjectSetting projectId={projectId!}/>
             </div>
           ) : (
               activeTab === "업무" && (

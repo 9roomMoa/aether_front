@@ -1,28 +1,20 @@
 import React, { useState, ChangeEvent } from "react";
 import { useFormContext } from "react-hook-form";
 
-interface ProjectDescriptionProps {
-  description: string;
-  setDescription?: (newTitle: string) => void;
-}
-
 const ProjectDescription: React.FC = () => {
   const maxLength = 364;
-  const { register, setValue, watch } = useFormContext();
+  const { register, watch } = useFormContext();
   const description = watch("description") || "";
-
-  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    if (value.length <= maxLength) {
-      setValue("description", value);
-    }
-  };
 
   return (
     <div className="w-[1248px] h-[136px] px-4 py-3 bg-[#f3f5f8] rounded-lg shadow-[inset_0px_0px_4px_0px_rgba(26,26,35,0.12)] flex flex-col justify-start items-end gap-2.5">
       <textarea
-        value={description}
-        onChange={handleChange}
+        {...register("description", {
+          maxLength: {
+            value: maxLength,
+            message: `최대 ${maxLength}자까지 입력 가능합니다.`,
+          },
+        })}
         placeholder="프로젝트 설명을 입력하세요."
         className="self-stretch flex-1 bg-transparent outline-none resize-none text-[#4f5462] text-base font-semibold leading-normal"
       />

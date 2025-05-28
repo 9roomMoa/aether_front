@@ -28,12 +28,9 @@ const AuthRedirect: React.FC = () => {
         const response = await axiosInstance.get("/auth/profile",{
         });
 
-        console.log("✅ 응답 전체:", response.data);
-
         const result = response.data.result;
 
         if (!result) {
-          console.error("❌ result가 없음:", response.data);
           navigate("/login");
           return;
         }
@@ -44,8 +41,10 @@ const AuthRedirect: React.FC = () => {
         localStorage.setItem("rank", rank);
         localStorage.setItem("userId", userId);
         localStorage.setItem("email", email);
-
-        navigate("/user-info"); 
+        
+        setTimeout(() => {
+          navigate("/user-info");
+        }, 0);
       } catch (error) {
         console.error("인증 데이터 가져오기 실패:", error);
         navigate("/login");
