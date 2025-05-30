@@ -1,15 +1,12 @@
 import { Dispatch, SetStateAction, useState } from "react";
+import { Memo, useMemos, useCreateMemo } from "../../hooks/useMemo";
+import { formatDate } from "../../utils/date";
 
 interface Notice {
   id: string;
   type: string;
   body: string;
   date?: string;
-}
-
-interface Memo {
-  text: string;
-  date: string;
 }
 
 interface MemoCardProps {
@@ -20,27 +17,20 @@ interface MemoCardProps {
 const MemoCard = ({ setNotices, notices }: MemoCardProps) => {
   const [isNotice, setIsNotice] = useState(false);
 
-  const [memos, setMemos] = useState<Memo[]>([
-    { text: "Lorem ipsum dolor sit amet consectetur...", date: "01월 30일" },
-    { text: "Diam cursus nisi est massa risus lectus.", date: "01월 30일" },
-  ]);
+  const { data: memos = [], isLoading } = useMemos();
+  const { mutate: createMemo } = useCreateMemo();
 
   const [inputText, setInputText] = useState("");
 
   const handleAddItem = () => {
     if (inputText.trim() === "") return;
-
-    const today = new Date();
-    const date = today
-      .toLocaleDateString("ko-KR", {
+    if (isNotice) {
+      const today = new Date();
+      const date = today.toLocaleDateString("ko-KR", {
         month: "2-digit",
         day: "2-digit",
-      })
-      .replace(".", "월")
-      .replace(".", "일")
-      .replace(" ", "");
+      }).replace(".", "월").replace(".", "일").replace(" ", "");
 
-    if (isNotice) {
       const newNotice: Notice = {
         id: Date.now().toString(),
         type: "사내공지",
@@ -49,10 +39,8 @@ const MemoCard = ({ setNotices, notices }: MemoCardProps) => {
       };
       setNotices((prev) => [...prev, newNotice]);
     } else {
-      const newMemo: Memo = { text: inputText, date };
-      setMemos((prev) => [...prev, newMemo]);
+      createMemo(inputText);
     }
-
     setInputText("");
   };
 
@@ -101,8 +89,8 @@ const MemoCard = ({ setNotices, notices }: MemoCardProps) => {
             ))
           : memos.map((item, idx) => (
               <div key={idx} className="bg-[#F3F5F8] rounded p-4 text-sm relative">
-                <p>{item.text}</p>
-                <p className="text-xs text-right mt-2 text-gray-500">{item.date}</p>
+                <p>{item.description}</p>
+                <p className="text-xs text-right mt-2 text-gray-500">{formatDate(item.createdAt)}</p>
               </div>
             ))}
       </div>
