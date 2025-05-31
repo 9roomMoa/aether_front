@@ -1,4 +1,19 @@
+# 인증 API 프록시
 [[redirects]]
-    from = "/*"
-    to = "/index.html"
-    status = 200
+  from = "/auth/*"
+  to = "https://aether.asia/auth/:splat"
+  status = 200
+  force = true
+
+# 일반 API 프록시
+[[redirects]]
+  from = "/api/*"
+  to = "https://aether.asia/api/:splat"
+  status = 200
+  force = true
+
+# SPA 라우팅 처리
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
