@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ProjectTitle from "./Project/ProjectTitle";
 import ProjectDescription from "./Project/ProjectDescription";
 import TaskStatus from "./TaskInfo/TaskStatus";
