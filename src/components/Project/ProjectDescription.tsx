@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import { useFormContext } from "react-hook-form";
 
 const ProjectDescription: React.FC = () => {

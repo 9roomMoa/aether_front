@@ -1,6 +1,4 @@
-import React from "react";
 import { Controller , UseFormReturn, FieldValues, Path } from "react-hook-form";
-import { TaskInfoValues } from "../../hooks/useTask";
 
 interface TaskDateProps<T extends FieldValues> {
   methods: UseFormReturn<T>;

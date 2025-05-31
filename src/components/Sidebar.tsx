@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Profile from "../assets/Profile.svg";
 import Alarm from "../assets/Alarm.svg";
 import Search from "../assets/Vector.svg";
