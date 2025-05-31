@@ -1,6 +1,4 @@
-import React from "react";
 import { UseFormReturn, Controller, FieldValues, Path } from "react-hook-form";
-import { TaskInfoValues } from "../../hooks/useTask";
 
 interface TaskPriorityProps<T extends FieldValues> {
   methods: UseFormReturn<T>;
