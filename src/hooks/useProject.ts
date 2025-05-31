@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery,useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProject, fetchProjectList } from "../api/projectApi";
+import { createProject, fetchProject, fetchProjectList, updateProject } from "../api/projectApi";
 
 const projectSchema = z.object({
    _id: z.string().optional(),
@@ -19,7 +19,7 @@ const projectSchema = z.object({
 
 export interface ProjectIinfoValues extends z.infer<typeof projectSchema> {}
 
-function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: () => void }) {
+function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: () => void; projectId?: string; }) {
     const queryClient = useQueryClient();
     const [projects, setProjects] = useState<ProjectIinfoValues[]>([]);
 
@@ -42,7 +42,6 @@ function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: (
       (newProject: ProjectIinfoValues) => createProject(newProject),
       {
           onSuccess: (data) => {
-              console.log("프로젝트 생성:", data);
               queryClient.invalidateQueries(["projectInfo", teamId]);
               options?.onSuccess?.();
           },
@@ -61,13 +60,93 @@ function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: (
         }
     });
 
+    // 수정 mutation
+    const updateProjectMutation = useMutation(
+        (updatedData: Partial<ProjectIinfoValues>) => {
+            const {_id, members, ...safeData} = updatedData;
+            console.log("전송될 최종 safeData:", safeData);
+            return updateProject(options!.projectId!, safeData);
+        },      
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["projectDetail", options?.projectId]);
+                queryClient.invalidateQueries(["projectInfo", teamId]);
+                options?.onSuccess?.();
+            },
+            onError: (error) => {
+                console.error(error);
+            },
+        }
+    );
+
+    // 프로젝트 수정
+    const handleUpdateProject = methods.handleSubmit(async (formData) => {
+        const prevData = projectDetail?.data;
+        if (!prevData) return;
+
+        const updatedData = Object.fromEntries(
+            Object.entries(formData).filter(([key, value]) => {
+                const typedKey = key as keyof ProjectIinfoValues;
+                let prevValue = projectDetail?.data?.[typedKey];
+
+                // 날짜 형식 비교
+                if ((typedKey === "startDate" || typedKey === "dueDate")) {
+                    const valueStr =
+                        typeof value === "string"
+                        ? value.split("T")[0] 
+                        : String(value);
+
+                    const prevStr =
+                        typeof prevValue === "string"
+                        ? new Date(prevValue).toISOString().split("T")[0]
+                        : String(prevValue);
+
+                    return valueStr !== prevStr;
+                }
+
+                return value !== prevValue;
+            })
+        ) as Partial<ProjectIinfoValues>;
+
+        // 날짜 값 T 제거
+        if (updatedData.startDate) {
+            updatedData.startDate = updatedData.startDate.split("T")[0];
+        }
+        if (updatedData.dueDate) {
+            updatedData.dueDate = updatedData.dueDate.split("T")[0];
+        }
+
+        if (Object.keys(updatedData).length === 0) {
+            return;
+        }
+
+        try {
+            await updateProjectMutation.mutateAsync(updatedData);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    // 프로젝트 상세 조회
+    const { data: projectDetail } = useQuery(
+        ["projectDetail", options?.projectId],
+        () => fetchProject(options!.projectId!),
+        {
+        enabled: !!options?.projectId && !isCreate,
+        onSuccess: (data) => {
+            methods.reset({
+            ...data.data,
+            });
+        },
+        }
+    );
+
     // 프로젝트 전체 리스트 조회
     const { data: projectData, isLoading } = useQuery(
         ["projectInfo", teamId],
         () => fetchProjectList(teamId as string),
         {
             enabled: !isCreate,  // 프로젝트 생성이 아닐 때만 조회 요청
-            initialData: null,
         }
     );
 
@@ -78,7 +157,7 @@ function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: (
         }
     }, [projectData]);
 
-    return { ...methods, projects, isLoading, handleCreateProject };
+    return { ...methods, projects, isLoading, handleCreateProject, projectDetail, handleUpdateProject };
 }
 
 export default useProject;

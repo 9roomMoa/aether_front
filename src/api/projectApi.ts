@@ -10,7 +10,6 @@ export const createProject = async (projectData: object) => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw error;
   }
 };
 
@@ -26,12 +25,23 @@ export const fetchProjectList = async (teamId: string) => {
   }
 };
 
-// 업무 상세정보 수정
-// export const updateTask = async (tid: string, updatedData: Partial<TaskInfoValues>) => {
-//   try{
-//     const response = await axiosInstance.patch(`/api/tasks/${tid}/info`, updatedData);
-//     return response.data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+// 프로젝트 상세 조회
+export const fetchProject = async (pid: string) => {
+  try {
+    const response = await axiosInstance.get(`/api/projects/${pid}/info`,{
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+// 프로젝트 수정
+export const updateProject = async (pid: string, updatedData: Partial<ProjectIinfoValues>) => {
+  try{
+    const response = await axiosInstance.patch(`/api/projects/${pid}`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

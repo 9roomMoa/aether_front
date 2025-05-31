@@ -23,16 +23,15 @@ interface Project {
 
 interface Notice {
   id: string;
-  type: string;
-  body: string;
+  content: string;
+  createdAt: string;
 }
 
 interface DashboardContentsProps {
-  setNotices: Dispatch<SetStateAction<Notice[]>>;
   notices: Notice[];
 }
 
-const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
+const DashboardContents = ({ notices }: DashboardContentsProps) => {
   const navigate = useNavigate();
   const [myTasks, setMyTasks] = useState<Task[]>([]);
   const [sortType, setSortType] = useState<"dueDate" | "priority">("dueDate");
@@ -44,7 +43,6 @@ const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
         const response = await axiosInstance.get(`/api/tasks?type=${sortType}`);
 
         const data = response.data?.data;
-        console.log("받은 업무 데이터:", data);
 
         setMyTasks(data || []);
       } catch (error) {
@@ -158,7 +156,7 @@ const DashboardContents = ({ setNotices, notices }: DashboardContentsProps) => {
 
       {/* 오른쪽 열 (메모) */}
       <div>
-        <MemoCard setNotices={setNotices} notices={notices} />
+        <MemoCard notices={notices} />
       </div>
     </div>
   );

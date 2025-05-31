@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProjectTitle from "./Project/ProjectTitle";
 import ProjectDescription from "./Project/ProjectDescription";
 import TaskStatus from "./TaskInfo/TaskStatus";
@@ -9,17 +9,21 @@ import ProjectScope from "./Project/ProjectScope";
 import TaskDate from "./TaskInfo/TaskDate";
 import TaskPriority from "./TaskInfo/TaskPriority";
 
-const ProjectSetting: React.FC = () => {
+const ProjectSetting: React.FC<{projectId:string}> = ({ projectId }) => {
   const teamId = "67fce39dddf4eb5d55ecb3d0";
-  const methods = useProject(teamId, false);
+  const methods = useProject(teamId, false, {projectId});
 
   return (
     <div className="w-full px-10 py-8">
       <FormProvider {...methods}>
-        <form className="space-y-6">
+        <form 
+          key={projectId} 
+          className="space-y-6"
+          onSubmit={methods.handleUpdateProject}
+        >
           {/* 프로젝트 제목 */}
           <div>
-            <label className="w-block mb-2 text-sm font-medium text-[#4F5462]">프로젝트 제목</label>
+            <label className="w-block mb-2 text-sm font-medium `text-[#4F5462]">프로젝트 제목</label>
             <ProjectTitle/>
           </div>
 
@@ -42,7 +46,7 @@ const ProjectSetting: React.FC = () => {
             {/* 공개여부 */}
             <div className="flex self-stretch justify-start items-start gap-12">
               <label className="w-[59px] text-[#949bad] text-base font-medium leading-normal" style={{ marginTop: "7.6px" }} >
-                공개 여부
+                공개여부
               </label>
               <ProjectScope methods={methods}/> 
             </div>
