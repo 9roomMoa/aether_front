@@ -1,43 +1,35 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Memo, useMemos, useCreateMemo } from "../../hooks/useMemo";
 import { formatDate } from "../../utils/date";
+import { useCreateNotice } from "../../hooks/useNotice";
+import { useCurrentUser } from "../../hooks/useUser";
 
 interface Notice {
   id: string;
-  type: string;
-  body: string;
-  date?: string;
+  content: string;
+  createdAt: string;
 }
 
 interface MemoCardProps {
-  setNotices: Dispatch<SetStateAction<Notice[]>>;
   notices: Notice[];
 }
 
-const MemoCard = ({ setNotices, notices }: MemoCardProps) => {
+const MemoCard = ({ notices }: MemoCardProps) => {
   const [isNotice, setIsNotice] = useState(false);
 
+  const user = useCurrentUser();
   const { data: memos = [], isLoading } = useMemos();
   const { mutate: createMemo } = useCreateMemo();
+  const { mutate: createNotice } = useCreateNotice();
 
   const [inputText, setInputText] = useState("");
+
+  const canWriteNotice = user && ["Manager", "Director", "VP", "CEO"].includes(user.rank);
 
   const handleAddItem = () => {
     if (inputText.trim() === "") return;
     if (isNotice) {
-      const today = new Date();
-      const date = today.toLocaleDateString("ko-KR", {
-        month: "2-digit",
-        day: "2-digit",
-      }).replace(".", "월").replace(".", "일").replace(" ", "");
-
-      const newNotice: Notice = {
-        id: Date.now().toString(),
-        type: "사내공지",
-        body: inputText,
-        date,
-      };
-      setNotices((prev) => [...prev, newNotice]);
+      createNotice(inputText);
     } else {
       createMemo(inputText);
     }
@@ -48,24 +40,26 @@ const MemoCard = ({ setNotices, notices }: MemoCardProps) => {
     <div className="flex flex-col justify-between items-start h-[722px] min-w-[394px] max-w-[402px] p-[20px_16px] rounded-lg shadow bg-white">
       {/* 스위치 & 헤더 */}
       <div className="flex items-center gap-2 mb-4">
-        <label className="relative inline-flex items-center w-[42px] h-[24px] cursor-pointer">
-          <input
-            type="checkbox"
-            className="sr-only peer"
-            checked={isNotice}
-            onChange={() => setIsNotice(!isNotice)}
-          />
-          <div
-            className={`w-full h-full rounded-full transition-colors duration-300 ${
-              isNotice ? "bg-[#FFE5E0]" : "bg-[#E5EAF2]"
-            }`}
-          />
-          <div
-            className={`absolute top-1 left-1 w-[16px] h-[16px] rounded-full transition-all duration-300 ${
-              isNotice ? "bg-[#FF432B] translate-x-[18px]" : "bg-[#949BAD] translate-x-0"
-            }`}
-          />
-        </label>
+        {canWriteNotice && (
+                  <label className="relative inline-flex items-center w-[42px] h-[24px] cursor-pointer">
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              checked={isNotice}
+              onChange={() => setIsNotice(!isNotice)}
+            />
+            <div
+              className={`w-full h-full rounded-full transition-colors duration-300 ${
+                isNotice ? "bg-[#FFE5E0]" : "bg-[#E5EAF2]"
+              }`}
+            />
+            <div
+              className={`absolute top-1 left-1 w-[16px] h-[16px] rounded-full transition-all duration-300 ${
+                isNotice ? "bg-[#FF432B] translate-x-[18px]" : "bg-[#949BAD] translate-x-0"
+              }`}
+            />
+          </label>
+        )}
 
         <h2
           className={`text-[20px] font-semibold transition-colors duration-300 ${
@@ -81,16 +75,18 @@ const MemoCard = ({ setNotices, notices }: MemoCardProps) => {
         {isNotice
           ? notices.map((item, idx) => (
               <div key={idx} className="bg-[#F3F5F8] rounded p-4 text-sm relative">
-                <p>{item.body}</p>
+                <p>{item.content}</p>
                 <p className="text-xs text-right mt-2 text-gray-500">
-                  {item.date ?? ""}
+                  {formatDate(item.createdAt)}
                 </p>
               </div>
             ))
           : memos.map((item, idx) => (
               <div key={idx} className="bg-[#F3F5F8] rounded p-4 text-sm relative">
                 <p>{item.description}</p>
-                <p className="text-xs text-right mt-2 text-gray-500">{formatDate(item.createdAt)}</p>
+                <p className="text-xs text-right mt-2 text-gray-500">
+                  {formatDate(item.createdAt)}
+                </p>
               </div>
             ))}
       </div>
