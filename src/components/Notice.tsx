@@ -4,8 +4,8 @@ import icon from "../assets/Megaphone.svg";
 
 interface Notice {
   id: string;
-  type: string;
-  body: string;
+  content: string;
+  createdAt: string;
 }
 
 const Notice = ({ notices }: { notices: Notice[] }) => {
@@ -45,7 +45,7 @@ const Notice = ({ notices }: { notices: Notice[] }) => {
                     사내공지
                 </span>
 
-                <span className="text-[#4F5462] text-[20px] font-regular">{currentNotice.body}</span>
+                <span className="text-[#4F5462] text-[20px] font-regular">{currentNotice.content}</span>
                 </motion.div>
             </AnimatePresence>
         </div>

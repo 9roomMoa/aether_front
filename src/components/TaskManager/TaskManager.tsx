@@ -3,6 +3,7 @@ import Profile from '../../assets/Profile-small.svg';
 import { useFormContext } from 'react-hook-form';
 import { TaskInfoValues } from '../../hooks/useTask';
 import { useUser, User } from '../../hooks/useUser';
+import { getRankKorean } from "../../utils/rank";
 
 const TaskManager: React.FC<{ setIsAddingManager: (isAdding: boolean) => void }> = ({ setIsAddingManager }) => {
   const { setValue, watch } = useFormContext<TaskInfoValues>(); 
@@ -65,8 +66,8 @@ const TaskManager: React.FC<{ setIsAddingManager: (isAdding: boolean) => void }>
                 >
                   <img className="w-12 h-12 rounded-full" src={Profile} />
                   <div className="flex flex-col">
-                    <span className="text-[#4f5462] text-xs font-semibold">{user.name}</span>
-                    <span className="text-[#ff432b] text-sm font-medium">{user.email}</span>
+                    <span className="text-[#4f5462] text-base font-semibold leading-normal">{user.name}</span>
+                    <span className="text-[#ff432b] text-sm font-medium leading-normal">{getRankKorean(user.rank)}</span>
                   </div>
                 </div>
               ))
@@ -84,11 +85,11 @@ const TaskManager: React.FC<{ setIsAddingManager: (isAdding: boolean) => void }>
           <div className="absolute left-[128px] top-[232px] w-[464px] h-8 px-3 py-1 bg-[#f3f5f8] rounded-lg flex items-center">
             {selectedUser ? (
               <div className="h-6 px-2 bg-[#ffe3e0] rounded shadow-[0px_0px_28px_0px_rgba(79,84,98,0.12)] flex items-center">
-                <div className="text-[#ff432b] text-xs font-semibold">{selectedUser.name}</div>
+                <div className="text-[#ff432b] text-base font-semibold leading-normal ">{selectedUser.name}</div>
               </div>
             ) : (
               <input 
-                className="w-full bg-transparent text-[#4f5462] text-xs font-semibold outline-none"
+                className="w-full bg-transparent text-[#4f5462] text-base font-semibold leading-normal outline-none"
                 type="text"
                 placeholder="담당자를 입력해 주세요."
                 value={search}
@@ -108,8 +109,8 @@ const TaskManager: React.FC<{ setIsAddingManager: (isAdding: boolean) => void }>
                 >
                   <img className="w-12 h-12 rounded-full" src={Profile} />
                   <div className="flex flex-col justify-between h-12">
-                    <div className="text-[#4f5462] text-xs font-semibold leading-normal">{user.name}</div>
-                    <div className="text-[#ff432b] text-sm font-medium leading-normal">{user.email}</div>
+                    <div className="text-[#4f5462]  text-base font-semibold leading-normal">{user.name}</div>
+                    <div className="text-[#ff432b] text-sm font-medium leading-normal">{getRankKorean(user.rank)}</div>
                   </div>
                 </div>
               ))}
