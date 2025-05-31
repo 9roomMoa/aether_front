@@ -206,7 +206,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
           >
             {/* closeTab 속성 없음 문제 */}
             {isTaskSettingOpen ? 
-            <TaskSetting selectedTaskId={selectedTask} fetchTasks={fetchTasks} closeTab={() => setIsTaskSettingOpen(false)}/> : <TaskAdd fetchTasks={fetchTasks} closeTab={() => setIsTaskSettingOpen(false)}/>}
+            <TaskSetting selectedTaskId={selectedTask} fetchTasks={fetchTasks} closeTab={() => setIsTaskSettingOpen(false)}/> : <TaskAdd fetchTasks={fetchTasks}/>}
           </div>
         )}
       </div>
