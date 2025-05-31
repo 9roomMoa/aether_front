@@ -2,11 +2,8 @@ import BackgroundImage from "../assets/Login-Logo.svg";
 import GoogleLogo from "../assets/G-logo.svg";
 
 const Login = () => {
-  const REDIRECT_URL = "http://localhost:5173"; 
-
   const handleLogin = () => {
-    const encoded = btoa(REDIRECT_URL);
-    window.location.href = `https://aether.asia/oauth2/authorization/google?state=${encoded}`;
+    window.location.href = "https://aether.asia/oauth2/authorization/google";
   };
 
   return (
