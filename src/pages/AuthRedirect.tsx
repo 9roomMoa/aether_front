@@ -6,7 +6,6 @@ const AuthRedirect: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("✅ AuthRedirect.tsx 실행됨");
 
     const urlParams = new URLSearchParams(window.location.search);
     // const accessToken = urlParams.get("accessToken");

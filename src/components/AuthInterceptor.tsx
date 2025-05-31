@@ -9,7 +9,6 @@ const AuthInterceptor = () => {
     useEffect(() => {
         const handleAuth = async () => {
             if (location.pathname === "/auth/success") {
-                console.log("✅ /auth/success 감지됨, JSON 처리 시작");
 
                 try {
                     const responseText = document.body.innerText; // 현재 페이지의 JSON 데이터 가져오기

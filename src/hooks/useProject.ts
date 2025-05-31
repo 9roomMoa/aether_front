@@ -42,7 +42,6 @@ function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: (
       (newProject: ProjectIinfoValues) => createProject(newProject),
       {
           onSuccess: (data) => {
-              console.log("프로젝트 생성:", data);
               queryClient.invalidateQueries(["projectInfo", teamId]);
               options?.onSuccess?.();
           },
