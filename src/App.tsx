@@ -55,6 +55,25 @@ const App: React.FC = () => {
               }
             />
           ))}
+          <Route
+            path="/tasks/:projectId"
+            element={
+              <div style={{ display: "flex", height: "100vh", overflow: "hidden", position: "relative" }}>
+                <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onAlarmClick={handleAlarmClick} />
+                <div style={{ flex: 1, overflowY: "auto" }}>
+                  <TaskKanban activeTab={activeTab} setActiveTab={setActiveTab} />
+                </div>
+                <div
+                  className="absolute top-0 right-0 h-full w-[640px] bg-[#F8F9FC] z-50 transition-transform duration-300 ease-in-out"
+                  style={{
+                    transform: isAlarmOpen ? "translateX(0)" : "translateX(100%)",
+                  }}
+                >
+                  <Alarm />
+                </div>
+              </div>
+            }
+          />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>

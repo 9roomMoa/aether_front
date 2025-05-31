@@ -1,15 +1,16 @@
 import { axiosInstance } from './lib/axios';
 // import { ProjectIinfoValues } from '../hooks/useProject';
 
-// 업무 생성
-export const createTask = async (taskData: object) => {
+// 프로젝트 생성
+export const createProject = async (projectData: object) => {
   try {
-    const response = await axiosInstance.post('/api/tasks', taskData, {
+    const response = await axiosInstance.post('/api/projects', projectData, {
     });
     console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 

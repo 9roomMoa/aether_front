@@ -8,6 +8,7 @@ import ProjectSetting from "../components/ProjectSetting";
 import TaskAdd from "../components/TaskAdd";
 // import { useTask } from "../hooks/useTask";
 import axiosInstance from "../api/lib/axios";
+import { useParams } from "react-router-dom";
 
 interface TaskKanbanProps {
   activeTab: string;
@@ -15,6 +16,7 @@ interface TaskKanbanProps {
 }
 
 const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
+  const { projectId } = useParams<{ projectId: string }>();
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
   const [isTaskAddOpen, setIsTaskAddOpen] = useState(false);
@@ -54,8 +56,6 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
         return "#D3D3D3";
     }
   };
-  
-  const projectId = "679aedec4f051a6eaac0204c"; // 현재 프로젝트 ID (하드코딩)
 
   // const methods = useTask(null, true);
 
@@ -204,9 +204,19 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
               zIndex: 10,
             }}
           >
-            {/* closeTab 속성 없음 문제 */}
             {isTaskSettingOpen ? 
-            <TaskSetting selectedTaskId={selectedTask} fetchTasks={fetchTasks} closeTab={() => setIsTaskSettingOpen(false)}/> : <TaskAdd fetchTasks={fetchTasks}/>}
+              <TaskSetting 
+                projectId={projectId!}
+                selectedTaskId={selectedTask} 
+                fetchTasks={fetchTasks} 
+                closeTab={() => setIsTaskSettingOpen(false)}
+              /> 
+            : 
+              <TaskAdd
+                projectId={projectId!}
+                fetchTasks={fetchTasks} 
+                closeTab={() => setIsTaskAddOpen(false)}
+              />}
           </div>
         )}
       </div>

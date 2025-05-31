@@ -4,14 +4,15 @@ import Breadcrumb from "../components/BreadCrumb";
 import TaskMenu from "../components/KanbanBoard/TaskMenu";
 import TaskCard from "../components/KanbanBoard/TaskCard";
 import ProjectAdd from "../components/ProjectAdd";
-// import { useTask } from "../hooks/useTask";
-import axiosInstance from "../api/lib/axios";
+import useProject from "../hooks/useProject";
+import { useNavigate } from "react-router-dom";
 
 const TeamSpace: React.FC = () => {
   // const [activeTab, setActiveTab] = useState("프로젝트");
   const [isProjectAddOpen, setIsProjectAddOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [_isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
+  const navigate = useNavigate();
 
   const [tasks, setTasks] = useState<{ [key: string]: any[] }>({
     "To Do": [],
@@ -20,8 +21,8 @@ const TeamSpace: React.FC = () => {
     "Issue": [],
   });
 
-  const projectId = "679aedec4f051a6eaac0204c";
-  // const methods = useTask(null, true);
+  const teamId = "67fce39dddf4eb5d55ecb3d0";
+  const { projects } = useProject(teamId, false);
 
   const projectState = {
     "To Do": projects.filter((project) => project.status === "To Do"),
@@ -32,14 +33,10 @@ const TeamSpace: React.FC = () => {
   };
 
   const handleProjectClick = (projectId: string) => {
-    if (selectedProject === projectId) {
-      setSelectedProject(null);
-      setIsTaskSettingOpen(false);
-    } else {
-      setSelectedProject(projectId);
-      setIsTaskSettingOpen(true);
-      setIsProjectAddOpen(false);
-    }
+    setSelectedProject(projectId);
+    setIsTaskSettingOpen(true);
+    setIsProjectAddOpen(false);
+    navigate(`/tasks/${projectId}`);
   };
 
   const handleProjectAddClick = () => {
@@ -85,7 +82,7 @@ const TeamSpace: React.FC = () => {
             <div className="flex flex-col w-full px-10 py-8">
                 {/* ✅ 프로젝트 생성 버튼 눌렀을 때 화면 전환 */}
                 {isProjectAddOpen ? (
-                <ProjectAdd />
+                <ProjectAdd onSuccess={() => setIsProjectAddOpen(false)}/>
                 ) : (
                 <div className="flex gap-4 overflow-x-auto whitespace-nowrap">
                     {Object.entries(projectState).map(([status, projectList]) => (
@@ -96,7 +93,7 @@ const TeamSpace: React.FC = () => {
                             title={project.name}
                             description={project.description ?? ""}
                             status={project.status}
-                            onClick={() => handleProjectClick(project._id)}
+                            onClick={() => handleProjectClick(project._id ?? "")}
                             isSelected={selectedProject === project._id}
                             className={index === projectList.length - 1 ? "mb-10" : ""}
                         />

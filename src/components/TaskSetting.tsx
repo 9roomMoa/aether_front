@@ -10,9 +10,9 @@ import TaskManager from '../components/TaskManager/TaskManager';
 import { FormProvider } from "react-hook-form"
 import useTask from "../hooks/useTask"
 
-const TaskSetting: React.FC<{ selectedTaskId: string | null; closeTab: () => void; fetchTasks: () => void }> = ({ selectedTaskId, fetchTasks, closeTab }) => {
-  const methods = useTask(selectedTaskId, false, fetchTasks, closeTab);
-  const { handleUpdateTask, formState: { isLoading }, watch } = methods;
+const TaskSetting: React.FC<{ projectId:string, selectedTaskId: string | null; closeTab: () => void; fetchTasks: () => void }> = ({ projectId, selectedTaskId, fetchTasks, closeTab }) => {
+  const methods = useTask(projectId, selectedTaskId, false, fetchTasks, closeTab);
+  const { userInfo, handleUpdateTask, formState: { isLoading }, watch } = methods;
 
   const [activeTab, setActiveTab] = useState('info')
   const [isAddingManager, setIsAddingManager] = useState(false); // 담당자 추가
@@ -37,7 +37,7 @@ const TaskSetting: React.FC<{ selectedTaskId: string | null; closeTab: () => voi
     if (methods.formState.isLoading) return <div>Loading</div>;
     switch (activeTab) {
       case 'info':
-        return <TaskInfo taskInfoValues={taskInfoValues} methods={methods} />;
+        return <TaskInfo taskInfoValues={taskInfoValues} methods={methods} userInfo={userInfo} />;
       case 'docu':
         return <TaskDocument tid={selectedTaskId!}/>;
       case 'chat':
@@ -45,7 +45,7 @@ const TaskSetting: React.FC<{ selectedTaskId: string | null; closeTab: () => voi
     case 'user':
         return <TaskManager setIsAddingManager={setIsAddingManager}/>;
       default:
-        return <TaskInfo taskInfoValues={taskInfoValues} methods={methods}  />;
+        return <TaskInfo taskInfoValues={taskInfoValues} methods={methods} userInfo={userInfo}  />;
     }
   };
   
@@ -54,6 +54,11 @@ const TaskSetting: React.FC<{ selectedTaskId: string | null; closeTab: () => voi
     setActiveTab('info');
   }, [selectedTaskId]);
 
+  // 탭이 변경될 때마다 초기화
+  useEffect(() => {
+    setIsAddingManager(false); 
+  }, [activeTab]);
+  
   return (
     <FormProvider {...methods}>  
       <div className="flex items-stretch h-full bg-white pl-2">

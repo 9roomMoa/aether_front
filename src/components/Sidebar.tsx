@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Profile from "../assets/Profile.svg";
 import Alarm from "../assets/Alarm.svg";
 import Search from "../assets/Vector.svg";
 import Dash from "../assets/Dash.svg";
 import Setting from "../assets/Setting.svg";
 import AetherLogo from "../assets/Aether-logo.svg";
+import {useCurrentUser} from '../hooks/useUser';
 
 interface SidebarProps {
   setActiveTab: (tab: string) => void;
@@ -13,7 +14,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, onAlarmClick }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false); // 🔄 펼침 상태
+  const user = useCurrentUser();
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -68,10 +70,10 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, onAlarmClick }) => {
           />
 
           {/* 이름 + 직급 (펼쳐졌을 때만 보임) */}
-          {isExpanded && (
+          {isExpanded && user && (
             <div style={{ marginLeft: "12px", display: "flex", flexDirection: "column", justifyContent: "center", height: "100%" }}>
-              <span style={{ fontWeight: 600, fontSize: "16px", color: "#3D3D3D" }}>배수연</span>
-              <span style={{ fontSize: "12px", color: "#FF432B", fontWeight: 500 }}>사원</span>
+              <span style={{ fontWeight: 600, fontSize: "16px", color: "#3D3D3D" }}>{user.name}</span>
+              <span style={{ fontSize: "12px", color: "#FF432B", fontWeight: 500 }}>{user.rank}</span>
             </div>
           )}
         </div>
