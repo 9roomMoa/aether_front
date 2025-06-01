@@ -3,7 +3,17 @@ import GoogleLogo from "../assets/G-logo.svg";
 
 const Login = () => {
   const handleLogin = () => {
-    window.location.href = "https://aether.asia/oauth2/authorization/google";
+    const isLocal = window.location.hostname === "localhost";
+
+    const REDIRECT_URL = isLocal
+      ? "http://localhost:5173"
+      : null;
+
+    const loginUrl = REDIRECT_URL
+      ? `https://aether.asia/oauth2/authorization/google?state=${btoa(REDIRECT_URL)}`
+      : `https://aether.asia/oauth2/authorization/google`;
+
+      window.location.href = loginUrl;
   };
 
   return (
