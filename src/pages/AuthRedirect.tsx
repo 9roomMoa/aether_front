@@ -40,7 +40,7 @@ const AuthRedirect: React.FC = () => {
         localStorage.setItem("rank", rank);
         localStorage.setItem("userId", userId);
         localStorage.setItem("email", email);
-        
+
         setTimeout(() => {
           navigate("/user-info");
         }, 0);

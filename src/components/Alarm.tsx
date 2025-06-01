@@ -1,7 +1,8 @@
 import React from 'react';
 import Header from './TaskHeader';
+import { useAlarm, Notification } from "../hooks/useAlarm";
 
-interface Notification {
+interface RenderedNotification {
   project: string;
   task: string;
   date: string;
@@ -9,20 +10,31 @@ interface Notification {
   category: string;
 }
 
-const dummyNotifications: Notification[] = [
-  { project: 'ABCD 프로젝트', task: 'ABC 업무', date: '2025-02-03', message: '업무의 담당자가 되었습니다.', category: '오늘' },
-  { project: 'ABCD 프로젝트', task: 'ABC 업무', date: '2025-02-03', message: '업무의 담당자가 되었습니다.', category: '오늘' },
-  { project: 'ABCD 프로젝트', task: 'ABC 업무', date: '2025-02-03', message: '업무의 담당자가 되었습니다.', category: '오늘' },
-  { project: 'ABCD 프로젝트', task: 'ABC 업무', date: '2025-02-03', message: '업무의 담당자가 되었습니다.', category: '어제' },
-  { project: 'ABCD 프로젝트', task: 'ABC 업무', date: '2025-02-03', message: '업무의 담당자가 되었습니다.', category: '2일전' },
-  { project: 'ABCD 프로젝트', task: 'ABC 업무', date: '2025-02-03', message: '업무의 담당자가 되었습니다.', category: '2일전' },
-  { project: 'ABCD 프로젝트', task: 'ABC 업무', date: '2025-02-03', message: '업무의 담당자가 되었습니다.', category: '3일전' },
-];
-
 const Alarm: React.FC = () => {
-  const grouped = dummyNotifications.reduce<Record<string, Notification[]>>((acc, cur) => {
-    if (!acc[cur.category]) acc[cur.category] = [];
-    acc[cur.category].push(cur);
+  const { data: alarms = [], isLoading } = useAlarm(true);
+
+  if (isLoading) return <div className="p-4">불러오는 중...</div>;
+
+  const grouped = alarms.reduce<Record<string, RenderedNotification[]>>((acc, cur) => {
+    const createdDate = new Date(cur.createdAt);
+    const today = new Date();
+    const daysDiff = Math.floor((+today - +createdDate) / (1000 * 60 * 60 * 24));
+
+    let category = "오늘";
+    if (daysDiff === 1) category = "어제";
+    else if (daysDiff === 2) category = "2일 전";
+    else if (daysDiff >= 3) category = `${daysDiff}일 전`;
+
+    const transformed: RenderedNotification  = {
+      project: cur.projectTitle,
+      task: cur.taskTitle ?? "업무 없음",
+      date: cur.createdAt.slice(0, 10),
+      message: cur.message,
+      category,
+    };
+
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(transformed);
     return acc;
   }, {});
 
