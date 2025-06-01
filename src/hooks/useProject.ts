@@ -41,7 +41,7 @@ function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: (
     const createProjectMutation = useMutation(
       (newProject: ProjectIinfoValues) => createProject(newProject),
       {
-          onSuccess: (data) => {
+          onSuccess: () => {
               queryClient.invalidateQueries(["projectInfo", teamId]);
               options?.onSuccess?.();
           },
