@@ -105,8 +105,8 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
       <div>
         <Breadcrumb
           paths={[
-            { label: "회사" },
-            { label: "팀", path: "/teamspace" }, // 여기에만 navigate 기능 추가
+            { label: "DB Inc" },
+            { label: "팀 스페이스", path: "/teamspace" }, // 여기에만 navigate 기능 추가
             { label: "프로젝트" },
           ]}
         />
