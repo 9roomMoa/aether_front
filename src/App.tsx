@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const handleAlarmClick = () => {
     setIsAlarmOpen(prev => !prev);
   };
+  
 
   return (
     <QueryClientProvider client={queryClient}>

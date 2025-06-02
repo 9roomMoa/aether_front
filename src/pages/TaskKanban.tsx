@@ -105,9 +105,9 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
       <div>
         <Breadcrumb
           paths={[
-            { label: "ABC 회사" },
-            { label: "ABCD 팀", path: "/teamspace" }, // 여기에만 navigate 기능 추가
-            { label: "ABCDE 프로젝트" },
+            { label: "DB Inc" },
+            { label: "팀 스페이스", path: "/teamspace" }, // 여기에만 navigate 기능 추가
+            { label: "프로젝트" },
           ]}
         />
       </div>
@@ -139,7 +139,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
 
           {/* "프로젝트 설정" 탭이 활성화되면 TaskInfo 렌더링 */}
           {activeTab === "프로젝트 설정" ? (
-            <div className="relative w-full min-h-screen overflow-x-auto">
+            <div className="relative w-full min-h-screen overflow-x-auto overflow-y-auto">
               <ProjectSetting projectId={projectId!}/>
             </div>
           ) : (
@@ -158,33 +158,54 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
                     }}
                   >
                     {Object.entries(tasks).map(([status, taskList]) => (
-                      <div key={status} className="flex flex-col gap-4">
-                        {taskList.length === 0 && (
-                          <div
-                            className="min-w-[362px] max-w-[402px] rounded-[12px] bg-white p-3 shadow-md"
-                            style={{ borderTop: `6px solid ${getStatusColor(status)}` }}
-                          >
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-[#3D3D3D] font-semibold">{getStatusLabel(status)}</span>
-                              <span className="text-[#949BAD] text-sm">마감일 순 ⌄</span>
-                            </div>
-                          </div>
-                        )}
+                      <div key={status} className="min-w-[362px] max-w-[402px] flex flex-col">
+                        {/* 컬러 바: 색상 + 상단만 라운드 */}
+                        <div
+                          className="h-[6px]"
+                          style={{
+                            backgroundColor: getStatusColor(status),
+                            borderTopLeftRadius: "12px",
+                            borderTopRightRadius: "12px",
+                          }}
+                        />
 
-                        {taskList.length > 0 &&
-                          taskList
-                            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                            .map((task, index) => (
-                              <TaskCard
-                                key={task._id}
-                                title={task.title}
-                                description={task.description}
-                                status={task.status}
-                                onClick={() => handleTaskClick(task._id)}
-                                isSelected={selectedTask === task._id}
-                                className={index === taskList.length - 1 ? "mb-10" : ""}
-                              />
-                            ))}
+                        {/* 흰색 본문 영역: 유동 높이 + 라운드 없음 */}
+                        <div className="bg-white p-5 shadow-md flex flex-col gap-3 rounded-t-none rounded-b-[12px]">
+                          {/* Header */}
+                          <div className="flex justify-between items-center">
+                            <span className="text-[#3D3D3D] font-semibold">{getStatusLabel(status)}</span>
+                            <select
+                              value={"마감일순"}
+                              onChange={() => {}}
+                              className="text-xs text-[#949BAD] bg-transparent cursor-pointer border-none focus:outline-none"
+                            >
+                              <option value="마감일순">마감일순</option>
+                              <option value="최신생성일순">최신생성일순</option>
+                            </select>
+                          </div>
+
+                          {/* 업무 리스트 or 업무 없음 */}
+                          {taskList.length === 0 ? (
+                            <div></div>
+                          ) : (
+                            <div className="flex flex-col gap-3">
+                              {taskList
+                                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                                .map((task, index) => (
+                                  <TaskCard
+                                    key={task._id}
+                                    title={task.title}
+                                    description={task.description}
+                                    status={task.status}
+                                    onClick={() => handleTaskClick(task._id)}
+                                    isSelected={selectedTask === task._id}
+                                    isCompact
+                                    className={index === taskList.length - 1 ? "" : ""}
+                                  />
+                                ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>

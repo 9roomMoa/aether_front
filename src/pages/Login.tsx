@@ -2,13 +2,19 @@ import BackgroundImage from "../assets/Login-Logo.svg";
 import GoogleLogo from "../assets/G-logo.svg";
 
 const Login = () => {
-  const REDIRECT_URL = "http://localhost:5173"; 
-
   const handleLogin = () => {
-    const encoded = btoa(REDIRECT_URL);
-    window.location.href = `https://aether.asia/oauth2/authorization/google?state=${encoded}`;
-  };
+    const isLocal = window.location.hostname === "localhost";
 
+    const REDIRECT_URL = isLocal
+      ? "http://localhost:5173"
+      : null;
+
+    const loginUrl = REDIRECT_URL
+      ? `https://aether.asia/oauth2/authorization/google?state=${btoa(REDIRECT_URL)}`
+      : `https://aether.asia/oauth2/authorization/google`;
+
+      window.location.href = loginUrl;
+  };
   return (
     <div
       className="relative w-full h-screen bg-white flex items-center justify-start"

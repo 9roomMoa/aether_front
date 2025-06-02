@@ -266,7 +266,7 @@ const TaskDocument: React.FC<{ tid: string }> = ({ tid }) => {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <img className="w-3 h-3 rounded-full" src={Profile} alt="profile" />
-                  <div className="text-[#4f5462] text-xs font-medium">{doc.metadata.taskId}</div>
+                  <div className="text-[#4f5462] text-xs font-medium">{doc.uploaderName}</div>
                 </div>
                 <div className="text-[#949bad] text-xs font-medium">
                   {new Date(doc.uploadDate).toLocaleDateString().replace(/\. /g, '-').replace(/\.$/, '')}

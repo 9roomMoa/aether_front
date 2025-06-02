@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MemoCard from "./MemoCard";
 import axiosInstance from "../../api/lib/axios";
-import { Dispatch, SetStateAction } from "react";
+// import { Dispatch, SetStateAction } from "react";
 
 interface Task {
   _id: string;
@@ -34,13 +34,14 @@ interface DashboardContentsProps {
 const DashboardContents = ({ notices }: DashboardContentsProps) => {
   const navigate = useNavigate();
   const [myTasks, setMyTasks] = useState<Task[]>([]);
-  const [sortType, setSortType] = useState<"dueDate" | "priority">("dueDate");
+  const [taskSortType, setTaskSortType] = useState<"dueDate" | "priority">("dueDate");
+  const [projectSortType, setprojectSortType] = useState<"dueDate" | "priority">("dueDate");
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
     const fetchMyTasks = async () => {
       try {
-        const response = await axiosInstance.get(`/api/tasks?type=${sortType}`);
+        const response = await axiosInstance.get(`/api/tasks/dashboard?type=${taskSortType}`);
 
         const data = response.data?.data;
 
@@ -51,12 +52,12 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
     };
 
     fetchMyTasks();
-  }, [sortType]);
+  }, [taskSortType]);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axiosInstance.get("/api/projects/67fce39dddf4eb5d55ecb3d0");
+        const response = await axiosInstance.get(`/api/projects/67fce39dddf4eb5d55ecb3d0?type=${projectSortType}`);
         setProjects(response.data?.data || []);
       } catch (error) {
         console.error("프로젝트 가져오기 실패", error);
@@ -64,7 +65,7 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
     };
 
     fetchProjects();
-  }, []);
+  }, [projectSortType]);
 
   const getStatusBadge = (status: string) => {
     const badgeColor = {
@@ -100,7 +101,12 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
         <div className="h-[522px] min-w-[394px] max-w-[402px] bg-white rounded-xl shadow-md p-4 overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">참여 프로젝트</h2>
-            <span className="text-sm text-gray-400">우선순위 순 ▾</span>
+            <span
+              className="text-sm text-gray-400 cursor-pointer"
+              onClick={() => setprojectSortType((prev) => (prev === "dueDate" ? "priority" : "dueDate"))}
+            >
+              {projectSortType === "dueDate" ? "마감일 순 ▾" : "우선순위 순 ▾"}
+            </span>
           </div>
           {projects.length === 0 ? (
             <p className="text-sm text-gray-400">진행 중인 프로젝트가 없습니다.</p>
@@ -128,9 +134,9 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
           <h2 className="text-lg font-semibold">나의 업무</h2>
           <span
             className="text-sm text-gray-400 cursor-pointer"
-            onClick={() => setSortType((prev) => (prev === "dueDate" ? "priority" : "dueDate"))}
+            onClick={() => setTaskSortType((prev) => (prev === "dueDate" ? "priority" : "dueDate"))}
           >
-            {sortType === "dueDate" ? "마감일 순 ▾" : "우선순위 순 ▾"}
+            {taskSortType === "dueDate" ? "마감일 순 ▾" : "우선순위 순 ▾"}
           </span>
         </div>
         {myTasks.length === 0 ? (

@@ -1,14 +1,14 @@
-import {useState} from "react";
 import { getGradientByTime } from "../utils/getGradientByTime";
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
 import DashboardContents from "../components/Dashboard/DashboardContents";
 import Notice from "../components/Notice";
 import { useNotices } from "../hooks/useNotice";
-
+import { useAlarm } from "../hooks/useAlarm";
 
 const Dashboard = () => {
   const { gradient } = getGradientByTime();
   const { data: notices = [], isLoading } = useNotices();
+  useAlarm(true);
 
   return (
     <div className="relative w-full flex flex-col items-center">

@@ -51,8 +51,8 @@ const TeamSpace: React.FC = () => {
       <div>
         <Breadcrumb
             paths={[
-                { label: "ABC 회사" },
-                { label: "ABCD 팀" },
+                { label: "DB Inc" },
+                { label: "팀 스페이스" },
             ]}
         />
       </div>
