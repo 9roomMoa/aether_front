@@ -6,11 +6,12 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface RenderedNotification {
   project: string;
-  task: string;
+  task?: string;
   date: string;
   message: string;
   category: string;
   isRead: boolean;
+  noticeType: string;
 }
 
 const Alarm: React.FC = () => {
@@ -38,10 +39,13 @@ const Alarm: React.FC = () => {
   if (isLoading) return <div className="p-4">불러오는 중...</div>;
 
   const grouped = alarms.reduce<Record<string, RenderedNotification[]>>((acc, cur) => {
-    const createdDate = new Date(cur.createdAt);
-    const today = new Date();
-    const daysDiff = Math.floor((+today - +createdDate) / (1000 * 60 * 60 * 24));
+    const todayDate = new Date().toISOString().slice(0, 10); // '2025-06-02'
+    const createdDate = cur.createdAt.slice(0, 10); // 예: '2025-06-01'
+    const dateA = new Date(todayDate);
+    const dateB = new Date(createdDate);
 
+    const daysDiff = Math.floor((+dateA - +dateB) / (1000 * 60 * 60 * 24));
+    
     let category = "오늘";
     if (daysDiff === 1) category = "어제";
     else if (daysDiff === 2) category = "2일 전";
@@ -49,11 +53,12 @@ const Alarm: React.FC = () => {
 
     const transformed: RenderedNotification  = {
       project: cur.projectTitle,
-      task: cur.taskTitle ?? "업무 없음",
+      task: cur.taskTitle,
       date: cur.createdAt.slice(0, 10),
       message: cur.message,
       category,
       isRead: cur.isRead,
+      noticeType: cur.noticeType,
     };
 
     if (!acc[category]) acc[category] = [];
@@ -91,8 +96,13 @@ const Alarm: React.FC = () => {
                   >
                     <div className="flex justify-between mb-1">
                       <div className="text-[#FF432B] font-semibold">
-                        {item.project} &nbsp;&gt;&nbsp;
-                        <span className="text-[#4F5462] font-medium">{item.task}</span>
+                        {item.project}
+                        {item.task && (
+                          <>
+                            &nbsp;&gt;&nbsp;
+                            <span className="text-[#4F5462] font-medium">{item.task}</span>
+                          </>
+                        )}
                       </div>
                       <div className="text-[#949BAD]">{item.date}</div>
                     </div>

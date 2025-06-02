@@ -77,7 +77,6 @@ export const useAlarm = (enabled: boolean) => {
     });
 
     source.onerror = (err) => {
-      console.error("SSE 에러:", err);
       source.close();
     };
 
