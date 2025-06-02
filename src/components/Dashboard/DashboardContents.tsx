@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MemoCard from "./MemoCard";
 import axiosInstance from "../../api/lib/axios";
-import { Dispatch, SetStateAction } from "react";
+// import { Dispatch, SetStateAction } from "react";
 
 interface Task {
   _id: string;

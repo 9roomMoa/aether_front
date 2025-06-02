@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { Memo, useMemos, useCreateMemo } from "../../hooks/useMemo";
+import { useState } from "react";
+import { useMemos, useCreateMemo } from "../../hooks/useMemo";
 import { formatDate } from "../../utils/date";
 import { useCreateNotice } from "../../hooks/useNotice";
 import { useCurrentUser } from "../../hooks/useUser";
@@ -18,7 +18,7 @@ const MemoCard = ({ notices }: MemoCardProps) => {
   const [isNotice, setIsNotice] = useState(false);
 
   const user = useCurrentUser();
-  const { data: memos = [], isLoading } = useMemos();
+  const { data: memos = [] } = useMemos();
   const { mutate: createMemo } = useCreateMemo();
   const { mutate: createNotice } = useCreateNotice();
 

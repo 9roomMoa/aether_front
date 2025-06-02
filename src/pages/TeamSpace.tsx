@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Breadcrumb from "../components/BreadCrumb";
 import TaskMenu from "../components/KanbanBoard/TaskMenu";
@@ -14,12 +14,13 @@ const TeamSpace: React.FC = () => {
   const [_isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
   const navigate = useNavigate();
 
-  const [tasks, setTasks] = useState<{ [key: string]: any[] }>({
-    "To Do": [],
-    "In Progress": [],
-    "Done": [],
-    "Issue": [],
-  });
+  // projectState가 대신 역할 수행 중
+  // const [tasks, setTasks] = useState<{ [key: string]: any[] }>({
+  //   "To Do": [],
+  //   "In Progress": [],
+  //   "Done": [],
+  //   "Issue": [],
+  // });
 
   const teamId = "67fce39dddf4eb5d55ecb3d0";
   const { projects } = useProject(teamId, false);
