@@ -7,6 +7,7 @@ export interface Document {
     chunkSize: number;
     uploadDate: string;
     filename: string;
+    uploaderName: string;
     metadata: {
       taskId: string;
     };
