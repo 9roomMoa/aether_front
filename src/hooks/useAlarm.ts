@@ -1,9 +1,10 @@
-import { useEffect  } from "react";
+import { useEffect, useState  } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import {fetchAlarmList} from "../api/alarmApi"
 
 export interface Notification {
+  id: string;
   projectId: string;
   taskId: string;
   projectTitle: string;
@@ -12,10 +13,28 @@ export interface Notification {
   noticeType: string;
   isRead: boolean;
   createdAt: string;
+  notificationId: string;
 }
+
+// 읽음 상태 전역 관리
+let globalHasUnread = false;
+let listeners: ((value: boolean) => void)[] = [];
 
 export const useAlarm = (enabled: boolean) => {
   const queryClient = useQueryClient();
+  const [hasUnread, setHasUnread] = useState(globalHasUnread);
+
+  const update = (value: boolean) => {
+    globalHasUnread = value;
+    listeners.forEach((fn) => fn(value));
+  };
+
+  useEffect(() => {
+    listeners.push(setHasUnread);
+    return () => {
+      listeners = listeners.filter((fn) => fn !== setHasUnread);
+    };
+  }, []);
 
   // SSE 구독
   useEffect(() => {
@@ -39,14 +58,16 @@ export const useAlarm = (enabled: boolean) => {
 
     // 새로운 알림
     source.addEventListener("notification", (e) => {
-      const id = JSON.parse(e.data);
+      const id = e.data;
       console.log("새 알림 :", id);
+      update(true);
       queryClient.invalidateQueries(["alarms"]);
     });
 
     // 새로운 공지
     source.addEventListener("notice", (e) => {
-      const noticeId = JSON.parse(e.data);
+      
+      const noticeId = e.data;
       console.log("새 공지:", noticeId);
     });
 
@@ -67,10 +88,16 @@ export const useAlarm = (enabled: boolean) => {
 
 
   // 알람 상세 조회
-  return useQuery<Notification[]>({
+  const query = useQuery<Notification[]>({
     queryKey: ["alarms"],
     queryFn: fetchAlarmList,
     enabled,
     refetchOnWindowFocus: false,
   });
+
+  return {
+    ...query,
+    hasUnread,
+    setHasUnread: update,
+  };
 };

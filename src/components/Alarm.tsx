@@ -1,6 +1,8 @@
 import React from 'react';
 import Header from './TaskHeader';
 import { useAlarm, Notification } from "../hooks/useAlarm";
+import { markNotificationsAsRead } from "../api/alarmApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RenderedNotification {
   project: string;
@@ -8,10 +10,30 @@ interface RenderedNotification {
   date: string;
   message: string;
   category: string;
+  isRead: boolean;
 }
 
 const Alarm: React.FC = () => {
-  const { data: alarms = [], isLoading } = useAlarm(true);
+  const { data: alarms = [], setHasUnread, isLoading } = useAlarm(true);
+  const queryClient = useQueryClient();
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      const unreadIds = alarms
+        .filter((alarm) => !alarm.isRead)
+        .map((alarm) => alarm.id);
+
+      if (unreadIds.length === 0) return;
+      console.log("보낼 id", unreadIds);
+
+      await markNotificationsAsRead(unreadIds);
+      queryClient.invalidateQueries(["alarms"]); // 새로고침
+      setHasUnread(false);
+    } catch (err) {
+      console.error("읽음 처리 실패", err);
+    }
+  };
+
 
   if (isLoading) return <div className="p-4">불러오는 중...</div>;
 
@@ -31,6 +53,7 @@ const Alarm: React.FC = () => {
       date: cur.createdAt.slice(0, 10),
       message: cur.message,
       category,
+      isRead: cur.isRead,
     };
 
     if (!acc[category]) acc[category] = [];
@@ -50,14 +73,21 @@ const Alarm: React.FC = () => {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-[#4F5462] font-semibold text-base">{category}</h3>
                 {i === 0 && (
-                  <button className="text-sm text-[#949BAD] hover:underline">전체 읽음</button>
+                  <button
+                    onClick={handleMarkAllAsRead} 
+                    className="text-sm text-[#949BAD] hover:underline"
+                  >
+                    전체 읽음
+                  </button>
                 )}
               </div>
               <div className="flex flex-col gap-3">
                 {items.map((item, idx) => (
                   <div
                     key={idx}
-                    className="bg-white rounded-xl px-6 py-4 shadow-sm border border-[#E5EAF2] text-sm"
+                    className={`bg-white rounded-xl px-6 py-4 shadow-sm border border-[#E5EAF2] text-sm ${
+                      item.isRead ? "opacity-60" : ""
+                    }`}
                   >
                     <div className="flex justify-between mb-1">
                       <div className="text-[#FF432B] font-semibold">
