@@ -15,7 +15,6 @@ const Login = () => {
 
       window.location.href = loginUrl;
   };
-
   return (
     <div
       className="relative w-full h-screen bg-white flex items-center justify-start"
