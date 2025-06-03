@@ -13,7 +13,6 @@ const TaskAdd: React.FC<{ projectId:string, closeTab: () => void; fetchTasks: ()
   const { userInfo, handleCreateTask } = methods;
   
   const [activeTab, setActiveTab] = useState('info');
-  const [title, setTitle] = useState("");
   const [isAddingManager, setIsAddingManager] = useState(false); // 담당자 추가
 
   return (
@@ -23,7 +22,7 @@ const TaskAdd: React.FC<{ projectId:string, closeTab: () => void; fetchTasks: ()
           <Header title="업무 생성" />
           <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} visibleTabs={['info', 'user']} />
           <div className="overflow-auto">
-            <TaskTitle isEditable={true} title={title} setTitle={setTitle} />
+            <TaskTitle isEditable={true} />
             <TaskDivider top='152px' />
             {/* 업무 정보 폼 */}
             <form onSubmit={handleCreateTask}>  

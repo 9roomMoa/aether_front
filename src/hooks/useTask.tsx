@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTask, fetchTaskInfo, updateTask } from "../api/taskApi";
+import { createTask, fetchTaskInfo, updateTask , addTaskManager } from "../api/taskApi";
 import { fetchUserInfo } from "../api/userApi";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,8 +59,12 @@ export const useTask = (projectId: string, tid: string | null, isCreate: boolean
         status: taskData.data.status || "To Do",
         projectScope: taskData.data.projectScope || "Public",
         priority: taskData.data.priority || 0,
-        startDate: taskData.data.startDate || "",
-        dueDate: taskData.data.dueDate || "",
+        startDate: taskData.data.startDate
+          ? new Date(taskData.data.startDate).toISOString().split("T")[0]
+          : "",
+         dueDate: taskData.data.dueDate
+          ? new Date(taskData.data.dueDate).toISOString().split("T")[0]
+          : "",
         createdBy: taskData.data.createdBy,
         creator: taskData.data.creator || "",
         project: taskData.data.project || projectId,  // ✅ 프로젝트 ID 반영
@@ -99,6 +103,20 @@ export const useTask = (projectId: string, tid: string | null, isCreate: boolean
     }
   });
 
+  // 담당자 추가 mutation
+  const addTaskManagerMutation = useMutation(
+    ({ managerId, projectId }: { managerId: string; projectId: string }) =>
+      addTaskManager(tid as string, managerId, projectId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["taskInfo", tid]); 
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
+
   // 수정 mutation
   const updateTaskMutation = useMutation(
     (updatedData: Partial<TaskInfoValues>) => {
@@ -119,38 +137,72 @@ export const useTask = (projectId: string, tid: string | null, isCreate: boolean
   // 업무 수정
   const handleUpdateTask = methods.handleSubmit(async (formData) => {
     try {
-      const updatedData = Object.fromEntries(
-        Object.entries(formData).filter(([key, value]) => {
-          const typedKey = key as keyof TaskInfoValues;
-          let prevValue = taskData?.data?.[typedKey];
-          
-          // 날짜 포맷 변환
-          if ((typedKey === "startDate" || typedKey === "dueDate") && typeof prevValue === "string") {
-            prevValue = prevValue.split("T")[0];
+      const updatedData: Partial<TaskInfoValues> = {};
+      const prevData = taskData?.data || {};
+
+      // 날짜, 배열, 일반 값 각각 따로 비교
+      for (const key in formData) {
+        const typedKey = key as keyof TaskInfoValues;
+        const newValue = formData[typedKey];
+        let prevValue = prevData[typedKey];
+
+        // 날짜 형식 통일 후 비교
+        if ((typedKey === "startDate" || typedKey === "dueDate") && typeof prevValue === "string") {
+          const prevDate = new Date(prevValue).toISOString().split("T")[0];
+          const currentDate = typeof newValue === "string" ? newValue : "";
+          if (prevDate !== currentDate) {
+            updatedData[typedKey] = currentDate;
+          }
+          continue;
+        }
+
+        // 담당자 비교 
+        if (typedKey === "assignedTo" && Array.isArray(prevValue) && Array.isArray(newValue)) {
+          const prevSorted = [...prevValue].sort();
+          const newSorted = [...newValue].sort();
+
+          const isDifferent = JSON.stringify(prevSorted) !== JSON.stringify(newSorted);
+
+          // 새로 추가된 담당자만 있는 경우 → PATCH에 포함하지 않음
+          const addedManagers = newSorted.filter(id => !prevSorted.includes(id));
+          const removedManagers = prevSorted.filter(id => !newSorted.includes(id));
+
+          const onlyAdded = addedManagers.length > 0 && removedManagers.length === 0;
+
+          if (isDifferent && !onlyAdded) {
+            updatedData[typedKey] = newValue as TaskInfoValues["assignedTo"];
           }
 
-          // 담당자 문자열 비교
-          if (Array.isArray(value) && Array.isArray(prevValue)) {
-            return JSON.stringify(value) !== JSON.stringify(prevValue);
-          }
+          continue;
+        }
 
-        return value !== undefined && value !== prevValue;
-      })
-    ) as Partial<TaskInfoValues>;
-      
-    
-    if (updatedData.startDate) {
-      updatedData.startDate = updatedData.startDate.split("T")[0]; 
-    }
-    if (updatedData.dueDate) {
-      updatedData.dueDate = updatedData.dueDate.split("T")[0];
-    }
-    
-    delete updatedData.createdBy;
+        // 일반 비교
+        if (newValue !== undefined && newValue !== prevValue) {
+          updatedData[typedKey] = newValue as any;
+        }
+      }
 
+      // 새로 추가된 담당자 감지
+      const prevAssignedTo = (prevData.assignedTo || []) as string[];
+      const newAssignedTo = formData.assignedTo || [];
+      const addedManagers = newAssignedTo.filter(id => !prevAssignedTo.includes(id));
+
+      // 추가된 담당자 API 호출
+      for (const managerId of addedManagers) {
+        await addTaskManagerMutation.mutateAsync({
+          managerId,
+          projectId,
+        });
+      }
+
+      // 백엔드에 필요 없는 필드 제거
+      delete updatedData.createdBy;
+
+      console.log("추가된 담당자:", addedManagers);
+      console.log("변경된 필드:", updatedData);
+
+      // 변경된 필드가 있을 때만 patch
       if (Object.keys(updatedData).length > 0) {
-
-        // 프로젝트 id 추가
         if (!updatedData.project) {
           updatedData.project = projectId;
         }
