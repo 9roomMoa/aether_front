@@ -2,7 +2,7 @@ import React, { useState, useMemo  } from 'react';
 import Profile from '../../assets/Profile-small.svg';
 import { useFormContext } from 'react-hook-form';
 import { TaskInfoValues } from '../../hooks/useTask';
-import { useUser, User } from '../../hooks/useUser';
+import { User, usesearchProjectMembers } from '../../hooks/useUser';
 import { getRankKorean } from "../../utils/rank";
 
 const TaskManager: React.FC<{ setIsAddingManager: (isAdding: boolean) => void }> = ({ setIsAddingManager }) => {
@@ -13,7 +13,7 @@ const TaskManager: React.FC<{ setIsAddingManager: (isAdding: boolean) => void }>
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const projectId = watch("project"); 
-  const { data: members = [] } = useUser(projectId, search);
+  const { data: members = [] } = usesearchProjectMembers(projectId, search);
 
   // 검색어와 일치하는 사용자 필터링
   const filteredUsers = useMemo(() => {
