@@ -27,6 +27,13 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
     "Done": [],
     "Issue": [],
   });
+  const [sortTypes, setSortTypes] = useState<{ [status: string]: "dueDate" | "priority" }>({
+    "To Do": "dueDate",
+    "In Progress": "dueDate",
+    "Done": "dueDate",
+    "Issue": "dueDate",
+    "Hold": "dueDate",
+  });
 
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -61,9 +68,11 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
   // const methods = useTask(null, true);
 
   // 업무 데이터 가져오기
-  const fetchTasks = async () => {
+  const fetchTasks = async (type: string = "dueDate") => {
     try {
-      const response = await axiosInstance.get(`/api/tasks/${projectId}`);
+      const response = await axiosInstance.get(`/api/tasks/${projectId}`,{
+         params: { type },
+      });
       if (response.data.success) {
         setTasks({
           "To Do": response.data.data["To Do"] || [],
@@ -79,7 +88,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
   };
 
   useEffect(() => {
-    fetchTasks();
+    fetchTasks(); 
   }, []);
 
   // 업무 카드 클릭 시 TaskSetting 열기
@@ -164,7 +173,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
                   >
                     {Object.entries(tasks).map(([status, taskList]) => (
                       <div key={status} className="min-w-[362px] max-w-[402px] flex flex-col">
-                        {/* 컬러 바: 색상 + 상단만 라운드 */}
+                        {/* 컬러 바 */}
                         <div
                           className="h-[6px]"
                           style={{
@@ -174,18 +183,24 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
                           }}
                         />
 
-                        {/* 흰색 본문 영역: 유동 높이 + 라운드 없음 */}
+                        {/* 흰색 본문 영역 */}
                         <div className="bg-white p-5 shadow-md flex flex-col gap-3 rounded-t-none rounded-b-[12px]">
                           {/* Header */}
                           <div className="flex justify-between items-center">
                             <span className="text-[#3D3D3D] font-semibold">{getStatusLabel(status)}</span>
                             <select
-                              value={"마감일순"}
-                              onChange={() => {}}
+                              value={sortTypes[status] === "dueDate" ? "마감일순" : "우선순위순"}
+                              onChange={(e) => {
+                                const selected = e.target.value;
+                                setSortTypes((prev) => ({
+                                  ...prev,
+                                  [status]: selected === "마감일순" ? "dueDate" : "priority",
+                                }));
+                              }}
                               className="text-xs text-[#949BAD] bg-transparent cursor-pointer border-none focus:outline-none"
                             >
                               <option value="마감일순">마감일순</option>
-                              <option value="최신생성일순">최신생성일순</option>
+                              <option value="우선순위순">우선순위순</option>
                             </select>
                           </div>
 
@@ -195,7 +210,14 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
                           ) : (
                             <div className="flex flex-col gap-3">
                               {taskList
-                                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                                .sort((a, b) => {
+                                  const sortType = sortTypes[status];
+                                  if (sortType === "dueDate") {
+                                    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+                                  } else {
+                                    return b.priority - a.priority;
+                                  }
+                                })
                                 .map((task, index) => (
                                   <TaskCard
                                     key={task._id}
