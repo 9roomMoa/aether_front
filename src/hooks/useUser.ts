@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProjectMembers, fetchUserInfo, fetchMembers  } from "../api/userApi"; 
+import { fetchProjectMembers, fetchUserInfo, fetchMembers, searchProjectMembers  } from "../api/userApi"; 
 import { useState, useEffect } from "react";
 export interface User {
   _id: string;
@@ -9,7 +9,7 @@ export interface User {
   role: string;
 }
 
-// 전체 멤버 목록
+// 전체 멤버 목록 검색
 export const useAllMembers = (keyword: string = "") => {
   return useQuery<User[]>({
     queryKey: ["allMembers", keyword],
@@ -18,11 +18,23 @@ export const useAllMembers = (keyword: string = "") => {
   });
 };
 
-// 프로젝트에 속한 멤버 목록
-export const useProjectMembers = (projectId: string, keyword: string = "") => {
+// 프로젝트 멤버 조회
+export const useProjectMembers = (projectId: string) => {
+  return useQuery<{
+    creator: User;
+    members: User[];
+  }>({
+    queryKey: ["projectMembers", projectId],
+    queryFn: () => fetchProjectMembers(projectId),
+    enabled: !!projectId,
+  });
+};
+
+// 프로젝트에 속한 멤버 검색
+export const usesearchProjectMembers = (projectId: string, keyword: string = "") => {
   return useQuery<User[]>({
     queryKey: ["projectMembers", projectId, keyword],
-    queryFn: () => fetchProjectMembers(projectId, keyword),
+    queryFn: () => searchProjectMembers(projectId, keyword),
     enabled: !!projectId,
   });
 };  

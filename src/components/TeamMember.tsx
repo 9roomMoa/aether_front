@@ -11,8 +11,10 @@ const TeamMember: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [tempMembers, setTempMembers] = useState<User[]>([]);
   const [isAdding, setIsAdding] = useState(false);
 
-  // 조회 시 필요한 임시 멤버 목록
-  const { data: members = [] } = useProjectMembers(projectId, "");
+  // 조회 시 필요한 멤버 목록
+  const { data } = useProjectMembers(projectId);
+  const creator = data?.creator;
+  const members = data?.members ?? [];
 
   // 임시 멤버 추가 
   const handleAddTempMember = (user: User) => {
@@ -52,18 +54,22 @@ const TeamMember: React.FC<{ projectId: string }> = ({ projectId }) => {
   return (
     <div className="w-full px-10 py-8 flex flex-col gap-8">
       {/* 팀장 */}
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <div className="text-[#4f5462] text-xl font-semibold leading-7">팀장</div>
-        </div>
-        <div className="px-5 py-4 bg-[#f3f5f8] rounded-lg border border-[#e5eaf2] flex items-center gap-5">
-          <img className="w-12 h-12 rounded-full" src={Profile} />
-          <div className="flex flex-col justify-between">
-            <div className="text-[#4f5462] text-base font-semibold leading-normal">최기수</div>
-            <div className="text-[#ff432b] text-sm font-medium leading-normal">{getRankKorean("부장")}</div>
+      {creator && (
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <div className="text-[#4f5462] text-xl font-semibold leading-7">팀장</div>
+          </div>
+          <div className="px-5 py-4 bg-[#f3f5f8] rounded-lg border border-[#e5eaf2] flex items-center gap-5">
+            <img className="w-12 h-12 rounded-full" src={Profile} />
+            <div className="flex flex-col justify-between">
+              <div className="text-[#4f5462] text-base font-semibold leading-normal">{creator.name}</div>
+              <div className="text-[#ff432b] text-sm font-medium leading-normal">
+                {getRankKorean(creator.rank)}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 구분선 */}
       <div className="h-0.5 bg-[#e5eaf2] rounded-lg" />
