@@ -1,7 +1,7 @@
 import { axiosInstance } from "./lib/axios"; 
 import { User } from "../hooks/useUser";
 
-// 멤버 정보 fetch
+// 멤버 정보 검색
 export const fetchMembers = async (keyword: string = ""): Promise<User[]> => {
   const cleanedKeyword = keyword.replace(/\\/g, "");
   const { data } = await axiosInstance.get(`/api/members`, {
@@ -10,12 +10,21 @@ export const fetchMembers = async (keyword: string = ""): Promise<User[]> => {
   return data?.data || [];
 };
 
-// 프로젝트 멤버 정보 fetch
-export const fetchProjectMembers = async (pid: string, keyword: string = ""): Promise<User[]> => {
+// 프로젝트 멤버 조회
+export const fetchProjectMembers = async (pid: string): Promise<{
+  creator: User;
+  members: User[];
+}> => {
+  const { data } = await axiosInstance.get(`/api/projects/${pid}/members`);
+  return data?.data || { creator: null, members: [] };
+};
+
+
+// 프로젝트 멤버 검색
+export const searchProjectMembers = async (pid: string, keyword: string = ""): Promise<User[]> => {
   const { data } = await axiosInstance.get(`/api/projects/${pid}/members`, {
     params: keyword ? { keyword } : {},
   });
-  console.log(data);
   return data?.data?.members || [];
 };
 

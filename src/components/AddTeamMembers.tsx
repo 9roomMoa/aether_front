@@ -10,10 +10,10 @@ interface AddTeamMembersProps {
 }
 
 const AddTeamMembers: React.FC<AddTeamMembersProps> = ({ projectId, onClose, onAdd }) => {
-  // 검색 시 필요한 전체 멤버 목록
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const shouldFetch = !selectedUser && search.trim().length > 0;
+  // 검색 시 필요한 전체 멤버 목록
   const { data: searchResults = [] } = useAllMembers(shouldFetch ? search : "");
 
   // 유저 선택
