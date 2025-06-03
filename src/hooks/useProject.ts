@@ -19,7 +19,7 @@ const projectSchema = z.object({
 
 export interface ProjectIinfoValues extends z.infer<typeof projectSchema> {}
 
-function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: () => void; sortType: "dueDate" | "priority"; projectId?: string; }) {
+function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: () => void; sortType?: "dueDate" | "priority"; projectId?: string; }) {
     const queryClient = useQueryClient();
     const [projects, setProjects] = useState<ProjectIinfoValues[]>([]);
 
