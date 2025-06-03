@@ -9,7 +9,7 @@ interface AddTeamMembersProps {
   onAdd: (user: User) => void;
 }
 
-const AddTeamMembers: React.FC<AddTeamMembersProps> = ({ projectId, onClose, onAdd }) => {
+const AddTeamMembers: React.FC<AddTeamMembersProps> = ({ onClose, onAdd }) => {
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const shouldFetch = !selectedUser && search.trim().length > 0;
