@@ -65,8 +65,8 @@ const TaskSetting: React.FC<{ projectId:string, selectedTaskId: string | null; c
         <div className="w-full h-full relative bg-[#F8F9FC] rounded-tl-lg overflow-auto shadow-[inset_0px_0px_8px_rgba(26,26,35,0.12)]">
           <Header title="업무 설정"/>
           <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-          <TaskTitle isEditable={false} title={taskInfoValues.title}/>
-          <TaskDivider />
+          <TaskTitle isEditable={true} />
+          <TaskDivider top='152px'/>
           {/* 업무 설정, 업무 관리자 탭인 경우 하나의 폼으로 처리 */}
           {['info', 'user'].includes(activeTab) ? (
             <form onSubmit={handleUpdateTask}>

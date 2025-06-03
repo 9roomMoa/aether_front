@@ -2,16 +2,17 @@ import React from 'react';
 import { useFormContext } from "react-hook-form";
 
 interface TaskTitleProps {
-  isEditable: boolean;  // true면 업무 생성, false면 업무 설정 
-  title: string;
-  setTitle?: (newTitle: string) => void;
+  isEditable: boolean;
 }
 
-const TaskTitle: React.FC<TaskTitleProps> = ({ isEditable, title, setTitle }) => {
+const TaskTitle: React.FC<TaskTitleProps> = ({ isEditable }) => {
   const {
     register,
+    watch,
     formState: { errors },
   } = useFormContext();
+
+  const title = watch("title");
 
   return (
     <div className="absolute left-[128px] top-[88px]">
@@ -21,9 +22,7 @@ const TaskTitle: React.FC<TaskTitleProps> = ({ isEditable, title, setTitle }) =>
           <input
             {...register("title")}
             type="text"
-            defaultValue={title}
             placeholder="Place Holder"
-            onChange={(e) => setTitle?.(e.target.value)}
             className="w-full bg-transparent text-[#4f5462] text-2xl leading-9 tracking-[-0.025em] font-semibold"
           />
           </div>
