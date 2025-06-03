@@ -76,7 +76,7 @@ export const useAlarm = (enabled: boolean) => {
       console.log("keep_alive 수신", e.data);
     });
 
-    source.onerror = (err) => {
+    source.onerror = (_err) => {
       source.close();
     };
 

@@ -8,7 +8,6 @@ import useProject from "../hooks/useProject";
 import { useNavigate } from "react-router-dom";
 
 const TeamSpace: React.FC = () => {
-  // const [activeTab, setActiveTab] = useState("프로젝트");
   const [isProjectAddOpen, setIsProjectAddOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [_isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
@@ -70,7 +69,7 @@ const TeamSpace: React.FC = () => {
             }}
         >
             <div className="ml-[40px] mt-[10px]">
-            {/* ✅ NavBar의 탭은 '프로젝트' 하나만 존재 */}
+            {/* NavBar의 탭은 '프로젝트' 하나만 존재 */}
             <Navbar tabs={isProjectAddOpen ? ["프로젝트 생성"] : ["프로젝트"]} activeTab={isProjectAddOpen ? "프로젝트 생성" : "프로젝트"} setActiveTab={() => {}} />
             </div>
             <div>
@@ -81,7 +80,7 @@ const TeamSpace: React.FC = () => {
                 />
             </div>
             <div className="flex flex-col w-full px-10 py-8">
-                {/* ✅ 프로젝트 생성 버튼 눌렀을 때 화면 전환 */}
+                {/* 프로젝트 생성 버튼 눌렀을 때 화면 전환 */}
                 {isProjectAddOpen ? (
                 <ProjectAdd onSuccess={() => setIsProjectAddOpen(false)}/>
                 ) : (

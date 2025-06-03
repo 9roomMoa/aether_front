@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './TaskHeader';
-import { useAlarm, Notification } from "../hooks/useAlarm";
+import { useAlarm } from "../hooks/useAlarm";
 import { markNotificationsAsRead } from "../api/alarmApi";
 import { useQueryClient } from "@tanstack/react-query";
 
