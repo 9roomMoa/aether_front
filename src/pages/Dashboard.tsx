@@ -7,7 +7,7 @@ import { useAlarm } from "../hooks/useAlarm";
 
 const Dashboard = () => {
   const { gradient } = getGradientByTime();
-  const { data: notices = [], isLoading } = useNotices();
+  const { data: notices = [] } = useNotices();
   useAlarm(true);
 
   return (

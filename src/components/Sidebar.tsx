@@ -8,6 +8,7 @@ import Setting from "../assets/Setting.svg";
 import AetherLogo from "../assets/Aether-logo.svg";
 import {useCurrentUser} from '../hooks/useUser';
 import { useAlarm } from "../hooks/useAlarm";
+import { useNavigate } from "react-router-dom";
 
 interface SidebarProps {
   setActiveTab: (tab: string) => void;
@@ -16,11 +17,11 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, onAlarmClick }) => {
-  const [isExpanded, setIsExpanded] = useState(false); // 🔄 펼침 상태
+  const [isExpanded, setIsExpanded] = useState(false); // 펼침 상태
   const user = useCurrentUser();
   const { hasUnread } = useAlarm(true);
   const alarmIcon = hasUnread ? UnreadAlarm : Alarm;
-
+  const navigate = useNavigate(); 
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -95,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, onAlarmClick }) => {
           {[
             { icon: alarmIcon, label: "알림센터", onClick: onAlarmClick },
             { icon: Search, label: "통합검색" },
-            { icon: Dash, label: "대시보드" },
+            { icon: Dash, label: "대시보드", onClick: () => navigate("/dashboard") },
             { icon: Setting, label: "환경설정", onClick: () => setActiveTab("프로젝트 설정") },
           ].map(({ icon, label, onClick }, index) => (
             <div
@@ -127,9 +128,9 @@ const Sidebar: React.FC<SidebarProps> = ({ setActiveTab, onAlarmClick }) => {
           justifyContent: isExpanded ? "flex-start" : "center",
           alignItems: "center",
           width: "100%",
-          flexGrow: 1,
-          paddingBottom: "70px",
-          cursor: "pointer",
+          marginTop: "auto",
+          paddingBottom: "48px",
+          cursor: "pointer"
         }}
         onClick={toggleSidebar}
       >

@@ -6,7 +6,6 @@ import TaskMenu from "../components/KanbanBoard/TaskMenu";
 import TaskSetting from "../components/TaskSetting";
 import ProjectSetting from "../components/ProjectSetting";
 import TaskAdd from "../components/TaskAdd";
-// import { useTask } from "../hooks/useTask";
 import axiosInstance from "../api/lib/axios";
 import { useParams } from "react-router-dom";
 import TeamMember from "../components/TeamMember";
@@ -64,8 +63,6 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
         return "#D3D3D3";
     }
   };
-
-  // const methods = useTask(null, true);
 
   // 업무 데이터 가져오기
   const fetchTasks = async (type: string = "dueDate") => {
