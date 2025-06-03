@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MemoCard from "./MemoCard";
 import axiosInstance from "../../api/lib/axios";
-// import { Dispatch, SetStateAction } from "react";
 
 interface Task {
   _id: string;
@@ -83,7 +82,7 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
   };
 
   return (
-    <div className="w-full max-w-[1344px] mt-12 px-4 mx-auto flex gap-8">
+    <div className="w-full max-w-[1344px] mt-12 mb-12 px-4 mx-auto flex gap-8">
       {/* 왼쪽 열 (팀 스페이스 + 참여 프로젝트) */}
       <div className="flex flex-col gap-8">
         <div className="h-[168px] min-w-[394pxㅌ] max-w-[402px] bg-white rounded-xl shadow-md p-4">
