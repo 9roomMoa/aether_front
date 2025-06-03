@@ -70,7 +70,7 @@ const Alarm: React.FC = () => {
     <div className="flex h-full bg-white pl-2 pt-[3rem]">
       <div
         className="w-full h-full relative bg-[#F8F9FC] rounded-tl-lg overflow-auto shadow-[inset_0px_0px_8px_rgba(26,26,35,0.12)]">
-        <Header title="업무 생성" />
+        <Header title="알림 센터" />
 
         <div className="p-[48px]">
           {Object.entries(grouped).map(([category, items], i) => (
