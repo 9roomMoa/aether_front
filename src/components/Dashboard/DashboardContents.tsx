@@ -92,8 +92,8 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
             onClick={() => navigate("/teamspace")}
           >
             {/* 팀 스페이스 하드 코딩 */}
-            <p className="text-base font-semibold text-gray-800">Ho감자 팀</p>
-            <p className="text-sm text-gray-400">Body Text</p>
+            <p className="text-base font-semibold text-gray-800">구름모아 팀</p>
+            <p className="text-sm text-gray-400">Aether</p>
           </div>
         </div>
 
@@ -120,7 +120,7 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
                   {getStatusBadge(project.status)}
                   <p className="text-base font-semibold text-gray-800">{project.name}</p>
                 </div>
-                <p className="text-sm text-gray-400">Body Text</p>
+                <p className="text-sm text-gray-400">{project.description}</p>
               </div>
             ))
           )}
@@ -153,7 +153,7 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
                   {getStatusBadge(task.status)}
                   <p className="text-base font-semibold text-gray-800">{task.title}</p>
                 </div>
-                <p className="text-sm text-gray-400">Body Text</p>
+                <p className="text-sm text-gray-400">{task.description}</p>
               </div>
             ))
         )}

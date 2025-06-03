@@ -26,6 +26,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
     "Done": [],
     "Issue": [],
   });
+  
   const [sortTypes, setSortTypes] = useState<{ [status: string]: "dueDate" | "priority" }>({
     "To Do": "dueDate",
     "In Progress": "dueDate",

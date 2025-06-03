@@ -24,7 +24,7 @@ const Notice = ({ notices }: { notices: Notice[] }) => {
 
   return (
     <div className="w-[1244px] h-[136px] rounded-[8px] bg-[#FCFCFF] px-[16px] py-[20px] mx-auto shadow-[0px_0px_28px_0px_rgba(79,84,98,0.12)] my-[32px]">
-        <p className="text-gray-700 font-semibold text-[16px] mb-[12px]">공지</p>
+        <p className="text-gray-700 font-semibold text-lg mb-[12px]">공지</p>
 
         <div className="relative h-[60px] w-[1182px] overflow-hidden rounded border border-[#E5EAF2] bg-[#F5F7FA] px-4 py-[2px] flex items-center">
             <AnimatePresence mode="wait">
