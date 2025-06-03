@@ -1,11 +1,21 @@
 import { axiosInstance } from "./lib/axios"; 
 import { User } from "../hooks/useUser";
 
+// 멤버 정보 fetch
+export const fetchMembers = async (keyword: string = ""): Promise<User[]> => {
+  const cleanedKeyword = keyword.replace(/\\/g, "");
+  const { data } = await axiosInstance.get(`/api/members`, {
+    params: cleanedKeyword ? { keyword: cleanedKeyword } : {},
+  });
+  return data?.data || [];
+};
+
 // 프로젝트 멤버 정보 fetch
 export const fetchProjectMembers = async (pid: string, keyword: string = ""): Promise<User[]> => {
   const { data } = await axiosInstance.get(`/api/projects/${pid}/members`, {
     params: keyword ? { keyword } : {},
   });
+  console.log(data);
   return data?.data?.members || [];
 };
 

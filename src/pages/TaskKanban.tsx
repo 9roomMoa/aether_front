@@ -9,6 +9,7 @@ import TaskAdd from "../components/TaskAdd";
 // import { useTask } from "../hooks/useTask";
 import axiosInstance from "../api/lib/axios";
 import { useParams } from "react-router-dom";
+import TeamMember from "../components/TeamMember";
 
 interface TaskKanbanProps {
   activeTab: string;
@@ -141,6 +142,10 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ activeTab, setActiveTab }) => {
           {activeTab === "프로젝트 설정" ? (
             <div className="relative w-full min-h-screen overflow-x-auto overflow-y-auto">
               <ProjectSetting projectId={projectId!}/>
+            </div>
+          ) : activeTab === "팀원 관리" ? (
+            <div className="relative w-full min-h-screen overflow-x-auto overflow-y-auto">
+              <TeamMember projectId={projectId!}/>
             </div>
           ) : (
               activeTab === "업무" && (
