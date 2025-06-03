@@ -14,9 +14,10 @@ export const createProject = async (projectData: object) => {
 };
 
 // 프로젝트 리스트 조회
-export const fetchProjectList = async (teamId: string) => {
+export const fetchProjectList = async (teamId: string,  type: "dueDate" | "priority" = "dueDate") => {
   try {
     const response = await axiosInstance.get(`/api/projects/${teamId}`,{
+      params: { type }
     });
     return response.data;
   } catch (error) {

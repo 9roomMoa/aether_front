@@ -13,7 +13,17 @@ const TeamSpace: React.FC = () => {
   const [_isTaskSettingOpen, setIsTaskSettingOpen] = useState(false);
   const navigate = useNavigate();
   const teamId = "67fce39dddf4eb5d55ecb3d0";
-  const { projects } = useProject(teamId, false);
+  const [sortTypes, setSortTypes] = useState<{
+    [key: string]: "dueDate" | "priority";
+  }>({
+    "To Do": "dueDate",
+    "In Progress": "dueDate",
+    "Done": "dueDate",
+    "Issue": "dueDate",
+    "Hold": "dueDate",
+  });
+
+  const { projects } = useProject(teamId, false, { sortType: "dueDate"});
 
   const projectState = {
     "To Do": projects.filter((project) => project.status === "To Do"),
@@ -123,37 +133,44 @@ const TeamSpace: React.FC = () => {
                             <div className="flex justify-between items-center">
                               <span className="text-[#3D3D3D] font-semibold">{getStatusLabel(status)}</span>
                               <select
-                                value={"마감일순"}
-                                onChange={() => {}}
+                                value={sortTypes[status] === "dueDate" ? "마감일순" : "우선순위순"}
+                                onChange={(e) => {
+                                  const selected = e.target.value;
+                                  setSortTypes((prev) => ({
+                                    ...prev,
+                                    [status]: selected === "마감일순" ? "dueDate" : "priority",
+                                  }));
+                                }}
                                 className="text-xs text-[#949BAD] bg-transparent cursor-pointer border-none focus:outline-none"
                               >
                                 <option value="마감일순">마감일순</option>
-                                <option value="최신생성일순">최신생성일순</option>
+                                <option value="우선순위순">우선순위순</option>
                               </select>
                             </div>
-
-                            {projectList.length === 0 ? (
-                              <div></div>
-                            ) : (
-                              <div className="flex flex-col gap-3">
-                                {projectList
-                                  // .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                                  .sort((a, b) => a.name.localeCompare(b.name))
-                                  .map((project, index) => (
-                                    <TaskCard
-                                      key={project._id}
-                                      title={project.name}
-                                      description={project.description ?? ""}
-                                      status={project.status}
-                                      onClick={() => handleProjectClick(project._id ?? "")}
-                                      isSelected={selectedProject === project._id}
-                                      isCompact
-                                      className={index === projectList.length - 1 ? "" : ""}
-                                  />
-                                ))}
-                            </div>
-                        )}
-                  </div>
+                            {projectList
+                              .sort((a, b) => {
+                                const type = sortTypes[status];
+                                if (type === "dueDate") {
+                                  const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+                                  const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+                                  return dateA - dateB;
+                                } else {
+                                  return b.priority - a.priority;
+                                }
+                              })
+                              .map((project, index) => (
+                                <TaskCard
+                                  key={project._id}
+                                  title={project.name}
+                                  description={project.description ?? ""}
+                                  status={project.status}
+                                  onClick={() => handleProjectClick(project._id ?? "")}
+                                  isSelected={selectedProject === project._id}
+                                  isCompact
+                                  className={index === projectList.length - 1 ? "" : ""}
+                                />
+                            ))}
+                          </div>
               </div>
             ))}
           </div>

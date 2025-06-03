@@ -19,7 +19,7 @@ const projectSchema = z.object({
 
 export interface ProjectIinfoValues extends z.infer<typeof projectSchema> {}
 
-function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: () => void; projectId?: string; }) {
+function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: () => void; sortType: "dueDate" | "priority"; projectId?: string; }) {
     const queryClient = useQueryClient();
     const [projects, setProjects] = useState<ProjectIinfoValues[]>([]);
 
@@ -142,12 +142,10 @@ function useProject(teamId: string, isCreate: boolean, options?: { onSuccess?: (
     );
 
     // 프로젝트 전체 리스트 조회
-    const { data: projectData, isLoading } = useQuery(
-        ["projectInfo", teamId],
-        () => fetchProjectList(teamId as string),
-        {
-            enabled: !isCreate,  // 프로젝트 생성이 아닐 때만 조회 요청
-        }
+    const { data: projectData = [], isLoading,} = useQuery(
+        ["projectInfo", teamId, options?.sortType ?? "dueDate"],
+        () => fetchProjectList(teamId as string, options?.sortType ?? "dueDate"),
+        { enabled: !isCreate, }
     );
 
     // 데이터를 가져오면 상태 업데이트
