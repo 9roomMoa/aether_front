@@ -33,3 +33,12 @@ export const updateTask = async (tid: string, updatedData: Partial<TaskInfoValue
     console.log(error);
   }
 };
+
+// 업무 담당자 추가
+export const addTaskManager = async (tid: string, managerId: string, projectId: string) => {
+  const { data } = await axiosInstance.post(`/api/tasks/${tid}/managers`, {
+    managerId,
+    projectId,
+  });
+  return data;
+};
