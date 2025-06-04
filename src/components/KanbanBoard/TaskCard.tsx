@@ -47,7 +47,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         }}
       >
         <p className="text-[16px] font-semibold text-[#4F5462] m-0">{title}</p>
-        <p className="text-xs text-[#4F5462] m-0 mt-1">{description}</p>
+        <p className="text-xs text-[#4F5462] m-0 mt-1 truncate whitespace-nowrap overflow-hidden">{description}</p>
       </div>
     );
   }
@@ -82,7 +82,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         }}
       >
         <p className="text-[20px] font-normal text-[#4F5462] m-0">{title}</p>
-        <p className="text-xs text-[#4F5462] m-0 mt-1">{description}</p>
+        <p className="text-xs text-[#4F5462] m-0 mt-1 truncate whitespace-nowrap overflow-hidden">{description}</p>
       </div>
     </div>
   );
