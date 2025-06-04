@@ -142,7 +142,6 @@ const DashboardContents = ({ notices }: DashboardContentsProps) => {
           <p className="text-sm text-gray-400">담당한 업무가 없습니다.</p>
         ) : (
           myTasks
-            .sort((a, b) => b._id.localeCompare(a._id))
             .map((task) => (
               <div
                 key={task._id}

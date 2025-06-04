@@ -24,7 +24,7 @@ const MemoCard = ({ notices }: MemoCardProps) => {
 
   const [inputText, setInputText] = useState("");
 
-  const canWriteNotice = user && ["Manager", "Director", "VP", "CEO"].includes(user.rank);
+  const canWriteNotice = user && ["Manager", "Director", "VIP", "CEO"].includes(user.rank);
 
   const handleAddItem = () => {
     if (inputText.trim() === "") return;
